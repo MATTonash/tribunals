@@ -62,3 +62,22 @@ blockquote:before {
 blockquote:after {
   content: close-quote;
 }
+
+
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 4px;
+  cursor: pointer;
+}
+
+.button2 {background-color: #008CBA;} /* Blue */
+.button3 {background-color: #4CAF50;} /* Blue */
+.button4 {background-color: #f44336;} /* Blue */

@@ -9,6 +9,7 @@ import {
   AreaHighlight,
 } from "./react-pdf-highlighter";
 
+
 import type { IHighlight, NewHighlight } from "./react-pdf-highlighter";
 
 import { testHighlights as _testHighlights } from "./test-highlights";
@@ -17,12 +18,29 @@ import { Sidebar } from "./Sidebar";
 
 import "./style/App.css";
 
-const testHighlights: Record<string, Array<IHighlight>> = _testHighlights;
+import { data } from "./dataDetect";
+
+
+
+// write auto detect function to show the text or content from pdf
+const autoDetectData: Record<string, Array<IHighlight>> = data;
+console.log(autoDetectData)
+
+
+const testHighlights333: Record<string, Array<IHighlight>> = _testHighlights;
+
+
 
 interface State {
   url: string;
   highlights: Array<IHighlight>;
+  updateTaskNo: number;
+  taskQuestion: string;
+  suggestion:string;
 }
+
+
+
 
 const getNextId = () => String(Math.random()).slice(2);
 
@@ -44,12 +62,47 @@ const HighlightPopup = ({
     </div>
   ) : null;
 
-const PRIMARY_PDF_URL = "https://arxiv.org/pdf/1708.08021.pdf";
+const PRIMARY_PDF_URL = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2912/Wolfe,%20David%20070921%20EA20190204.pdf";
 const SECONDARY_PDF_URL = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2912/Wolfe,%20David%20070921%20EA20190204.pdf";
 
 const searchParams = new URLSearchParams(document.location.search);
 
 const initialUrl = searchParams.get("url") || PRIMARY_PDF_URL;
+
+// console.log(initialUrl)
+var testHighlights = {"https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2912/Wolfe,%20David%20070921%20EA20190204.pdf" : [testHighlights333[initialUrl][0]]}
+// console.log(testHighlights)
+
+
+
+var curTaskID = 1;
+const taskList = ["What is the Judge's name?", "What is the Appellant's name?", 
+                  "What is the Respondents' name?"]; 
+const sugList = ["Judge", "Appellant", "Respondents"]; 
+
+const curTaskQuestion = taskList[0]
+const curSug = sugList[0]
+
+function getNextTaskId(taskID: number) {
+  return taskID + 1;
+}
+
+function getNextTaskQuestion(idx: number) {
+  return taskList[idx];
+}
+
+function getNextTaskSuggestion(idx: number) {
+  testHighlights = {"https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2912/Wolfe,%20David%20070921%20EA20190204.pdf" : [testHighlights333[initialUrl][idx-1]]}
+  return testHighlights;
+}
+
+function getNextSug(idx: number) {
+  return sugList[idx];
+}
+
+console.log("this is a main file")
+console.log(getNextSug(2))
+
 
 class App extends Component<{}, State> {
   state = {
@@ -57,7 +110,12 @@ class App extends Component<{}, State> {
     highlights: testHighlights[initialUrl]
       ? [...testHighlights[initialUrl]]
       : [],
+    updateTaskNo: curTaskID,
+    taskQuestion: curTaskQuestion,
+    suggestion: curSug,
   };
+
+
 
   resetHighlights = () => {
     this.setState({
@@ -75,6 +133,25 @@ class App extends Component<{}, State> {
     });
   };
 
+  nextTask = () => {
+    const newTaskNo = this.state.updateTaskNo = getNextTaskId(this.state.updateTaskNo)
+    const newTaskQue = this.state.taskQuestion = getNextTaskQuestion(newTaskNo-1)
+    const newSug = this.state.suggestion = getNextSug(newTaskNo-1)
+    const newHighlight = this.state.highlights = getNextTaskSuggestion(newTaskNo)
+
+
+
+    this.setState({
+      updateTaskNo: newTaskNo,
+      taskQuestion: newTaskQue,
+      suggestion: newSug,
+      highlights : newHighlight[initialUrl],
+
+      
+    });
+  };
+
+  
   scrollViewerTo = (highlight: any) => { };
 
   scrollToHighlightFromHash = () => {
@@ -99,6 +176,7 @@ class App extends Component<{}, State> {
     return highlights.find((highlight) => highlight.id === id);
   }
 
+  // add highlight object with the location information
   addHighlight(highlight: NewHighlight) {
     const { highlights } = this.state;
 
@@ -109,6 +187,7 @@ class App extends Component<{}, State> {
     });
   }
 
+    // only update the image highlight by dragging the mouse
   updateHighlight(highlightId: string, position: Object, content: Object) {
     console.log("Updating highlight", highlightId, position, content);
 
@@ -133,7 +212,7 @@ class App extends Component<{}, State> {
   }
 
   render() {
-    const { url, highlights } = this.state;
+    const { url, highlights, updateTaskNo, taskQuestion, suggestion} = this.state;
 
     return (
       <div className="App" style={{ display: "flex", height: "100vh" }}>
@@ -141,6 +220,11 @@ class App extends Component<{}, State> {
           highlights={highlights}
           resetHighlights={this.resetHighlights}
           toggleDocument={this.toggleDocument}
+          nextTask={this.nextTask}
+          updateTaskNo={updateTaskNo}
+          taskQuestion={taskQuestion}
+          suggestion={suggestion}
+
         />
         <div
           style={{
@@ -158,7 +242,7 @@ class App extends Component<{}, State> {
                 // pdfScaleValue="page-width"
                 scrollRef={(scrollTo) => {
                   this.scrollViewerTo = scrollTo;
-
+         
                   this.scrollToHighlightFromHash();
                 }}
                 onSelectionFinished={(

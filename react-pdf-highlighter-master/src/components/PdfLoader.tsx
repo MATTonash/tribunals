@@ -84,6 +84,18 @@ export class PdfLoader extends Component<Props, State> {
           cMapPacked,
         }).promise.then((pdfDocument) => {
           this.setState({ pdfDocument });
+          console.log("hello")
+          
+          // onwers document contain all the divs for hight elements base don the text
+          console.log(ownerDocument)
+
+          let div1 = ownerDocument.getElementsByClassName("pdfViewer removePageBorders")[0]
+          // let div1 = ownerDocument.querySelector('pdfViewer removePageBorders');
+          console.log(div1)
+          console.log(div1.children)
+    
+
+
         });
       })
       .catch((e) => this.componentDidCatch(e));

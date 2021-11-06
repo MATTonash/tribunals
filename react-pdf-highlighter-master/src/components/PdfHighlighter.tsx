@@ -291,6 +291,10 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       const highlightLayer = this.findOrCreateHighlightLayer(pageNumber);
 
       if (highlightLayer) {
+        console.log("already highlight divs")
+        console.log(highlightLayer)
+
+        console.log(highlightLayer)
         ReactDom.render(
           <div>
             {(highlightsByPage[String(pageNumber)] || []).map(

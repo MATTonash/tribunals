@@ -5,6 +5,11 @@ interface Props {
   highlights: Array<IHighlight>;
   resetHighlights: () => void;
   toggleDocument: () => void;
+  nextTask: () => void;
+  updateTaskNo: number;
+  taskQuestion?: string;
+  suggestion?: string;
+
 }
 
 const updateHash = (highlight: IHighlight) => {
@@ -15,6 +20,12 @@ export function Sidebar({
   highlights,
   toggleDocument,
   resetHighlights,
+  nextTask,
+  updateTaskNo,
+  taskQuestion,
+  suggestion,
+
+
 }: Props) {
   return (
     <div className="sidebar" style={{ width: "25vw" }}>
@@ -26,22 +37,40 @@ export function Sidebar({
             Open in GitHub
           </a>
         </p> */}
+        
 
-        <p>
+
+        {/* <p>
           <small>
             To create area highlight hold ⌥ Option key (Alt), then click and
             drag.
           </small>
-        </p>
-      </div>
+        </p> */}
 
+        <p>
+            Task {updateTaskNo}/8
+        </p>
+        
+        <p>
+        {updateTaskNo}. {taskQuestion}
+        </p>
+
+      </div>
+      
+      
+        {/* hightlight indicates the component information (position,text,id)
+        index indicates the order showed on the side bar */}
       <ul className="sidebar__highlights">
         {highlights.map((highlight, index) => (
           <li
             key={index}
             className="sidebar__highlight"
             onClick={() => {
-              updateHash(highlight);
+              console.log(highlight.id)
+              updateHash(highlight); 
+              console.log(highlight)
+              console.log(highlight.id)
+              console.log(index)
             }}
           >
             <div>
@@ -66,14 +95,40 @@ export function Sidebar({
           </li>
         ))}
       </ul>
-      <div style={{ padding: "1rem" }}>
-        <button onClick={toggleDocument}>Toggle PDF document</button>
+
+      <div>
+        <div style={{ padding: "1rem" }}>
+        <p>
+            We found one instance of the {suggestion}'s name, Please check this.
+        </p>
+        </div>
       </div>
+     
+      {/* <div style={{ padding: "1rem" }}>
+
+        <button className="button button3" onClick={toggleDocument}>More suggestion</button>
+
+      </div> */}
+
+      <div style={{ padding: "1rem" }}>
+
+        <button className="button button2" onClick={nextTask}>Next task</button>
+  
+        {/* <button className="button button4" onClick={toggleDocument}>Only show red</button> */}
+      </div>
+      
+      
+      <div style={{ padding: "1rem" }}>
+        <button onClick={toggleDocument}>Default highlight</button>
+      </div>
+
+      {/* if hightlight components has more than 0, it shows reset button, else is null */}
       {highlights.length > 0 ? (
         <div style={{ padding: "1rem" }}>
           <button onClick={resetHighlights}>Reset highlights</button>
         </div>
       ) : null}
+    
     </div>
   );
 }

@@ -33,8 +33,10 @@ export class Highlight extends Component<Props> {
     const { rects, boundingRect } = position;
 
     return (
+ 
       <div
         className={`Highlight ${isScrolledTo ? "Highlight--scrolledTo" : ""}`}
+        
       >
         {comment ? (
           <div
@@ -52,7 +54,10 @@ export class Highlight extends Component<Props> {
             <div
               onMouseOver={onMouseOver}
               onMouseOut={onMouseOut}
-              onClick={onClick}
+              // onClick={onClick}
+              onClick={() => {onClick;
+                console.log(rect)
+              }}
               key={index}
               style={rect}
               className={`Highlight__part`}

@@ -8,7 +8,7 @@
 .AreaHighlight__part {
   cursor: pointer;
   position: absolute;
-  background: rgba(255, 226, 143, 1);
+  background: rgb(255, 236, 182);
   transition: background 0.3s;
 }
 
