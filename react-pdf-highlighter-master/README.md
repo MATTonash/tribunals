@@ -2,6 +2,9 @@
 
 ![Node CI](https://github.com/agentcooper/react-pdf-highlighter/workflows/Node%20CI/badge.svg)
 
+## This project is based on react-pdf-highlighter library
+The key code is in the 'example' directory, as we are modifyign this to build our system. The sidepane.tsx contains the tasks. 
+
 ## react-pdf-highlighter
 
 `react-pdf-highlighter` is a [React](https://reactjs.org/) library that provides annotation experience for PDF documents on web. It is built on top of PDF.js by Mozilla. Text and rectangular highlights are supported. Highlight
