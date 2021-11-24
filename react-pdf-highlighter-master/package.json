@@ -38,6 +38,8 @@
     "@types/pdfjs-dist": "^2.7.4",
     "@types/react": "^16.4.0",
     "@types/react-dom": "^16.4.0",
+    "dom-to-json": "^0.0.4",
+    "domjson": "^0.1.2",
     "eslint-import-resolver-typescript": "^2.5.0",
     "lodash.debounce": "^4.0.8",
     "pdf-lib": "^1.17.0",

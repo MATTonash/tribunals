@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { toJSON  } from 'dom-to-json'
 
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist/legacy/build/pdf";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/display/api";
@@ -84,16 +85,21 @@ export class PdfLoader extends Component<Props, State> {
           cMapPacked,
         }).promise.then((pdfDocument) => {
           this.setState({ pdfDocument });
-          console.log("hello")
+          console.log("show the div with the text elements")
           
           // onwers document contain all the divs for hight elements base don the text
           console.log(ownerDocument)
 
           let div1 = ownerDocument.getElementsByClassName("pdfViewer removePageBorders")[0]
           // let div1 = ownerDocument.querySelector('pdfViewer removePageBorders');
+          console.log("check out the pdfviewer removePageBorders")
           console.log(div1)
-          console.log(div1.children)
-    
+          // console.log(ownerDocument.querySelectorAll('textLayer'))
+      
+          // console.log("32432432s")
+          // let someDOMElement = ownerDocument.getElementsByClassName("pdfViewer removePageBorders")[0];
+          // let jsonOutput = toJSON(someDOMElement);
+          // console.log(jsonOutput)
 
 
         });

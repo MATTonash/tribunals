@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 
+
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist/legacy/build/pdf";
 
 const workerSrc = "https://unpkg.com/pdfjs-dist@2.8.335/build/pdf.worker.min.js"
 
 
-
-
-let textItems = []
+let dataPageArray = []
 
 async function getContent(src, pg){
 
@@ -22,25 +21,59 @@ async function getContent(src, pg){
 async function getItems(src, pg){
   const content = await getContent(src, pg)
 
-  textItems.push(content.items)
   // const items = content.items.map((item) => {
   //   // console.log(item.str)
   //   // console.log(item.fontName)
   //   // console.log(item.transform)
   //   // console.log(item)
   // })
-  return textItems
+  
+  return content
 }
 
 var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2912/Wolfe,%20David%20070921%20EA20190204.pdf"
-getItems(src, 1)
 
-console.log("rawData", textItems)
 
-// for (var i = 0; i < textItems.length; i++) {
-//   console.log("fewfewfewfew")
-//   console.log(textItems[i]);
-// }
+console.log("grab info from pages")
+let f = getItems(src, 1)
+
+await f.then(function(pageinfo){ 
+  dataPageArray.push(pageinfo.items);
+})
+
+dataPageArray = dataPageArray[0]
+console.log(dataPageArray)
+
+
+
+for (var i=0;i< dataPageArray.length; i++) {
+
+  let text = dataPageArray[i]['str'].trim()
+  // console.log(text)
+
+  let judgeText = "judge"
+
+  if (text.toLowerCase().includes(judgeText)) {
+    console.log(i)
+    if (text.length == judgeText.length) {
+      // match prev or next element of array
+      console.log(i)
+    } else {
+      text.split
+      
+    }
+  }
+
+}
+
+
+
+
+
+
+
+
+// console.log("rawData", textItems)
 
 
 
