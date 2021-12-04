@@ -11,23 +11,21 @@ import {
 
 
 import type { IHighlight, NewHighlight } from "./react-pdf-highlighter";
-
-import { testHighlights as _testHighlights } from "./test-highlights";
 import { Spinner } from "./Spinner";
 import { Sidebar } from "./Sidebar";
 
 import "./style/App.css";
 
-import { data } from "./dataDetect";
+// enable to test on the test-highlights script
+// import { testHighlights as _testHighlights } from "./test-highlights";
+
+// enable to test on dataDectcts script
+import { testHighlights as _testHighlights } from "./dataDetect";
+import { PRIMARY_URL } from "./dataDetect";
 
 
 
-// write auto detect function to show the text or content from pdf
-const autoDetectData: Record<string, Array<IHighlight>> = data;
-console.log(autoDetectData)
-
-
-const testHighlights333: Record<string, Array<IHighlight>> = _testHighlights;
+const contentHighlights: Record<string, Array<IHighlight>> = _testHighlights;
 
 
 
@@ -62,17 +60,16 @@ const HighlightPopup = ({
     </div>
   ) : null;
 
-const PRIMARY_PDF_URL = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2912/Wolfe,%20David%20070921%20EA20190204.pdf";
-const SECONDARY_PDF_URL = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2912/Wolfe,%20David%20070921%20EA20190204.pdf";
+const PRIMARY_PDF_URL = PRIMARY_URL;
+const SECONDARY_PDF_URL = PRIMARY_URL;
 
 const searchParams = new URLSearchParams(document.location.search);
 
 const initialUrl = searchParams.get("url") || PRIMARY_PDF_URL;
 
 // console.log(initialUrl)
-var testHighlights = {"https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2912/Wolfe,%20David%20070921%20EA20190204.pdf" : [testHighlights333[initialUrl][0]]}
-// console.log(testHighlights)
-
+let testHighlights = {}
+testHighlights[initialUrl] = [contentHighlights[initialUrl][0]]
 
 
 var curTaskID = 1;
@@ -92,7 +89,7 @@ function getNextTaskQuestion(idx: number) {
 }
 
 function getNextTaskSuggestion(idx: number) {
-  testHighlights = {"https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2912/Wolfe,%20David%20070921%20EA20190204.pdf" : [testHighlights333[initialUrl][idx-1]]}
+  testHighlights = {initialUrl : [contentHighlights[initialUrl][idx-1]]}
   return testHighlights;
 }
 
@@ -189,6 +186,7 @@ class App extends Component<{}, State> {
 
     // only update the image highlight by dragging the mouse
   updateHighlight(highlightId: string, position: Object, content: Object) {
+
     console.log("Updating highlight", highlightId, position, content);
 
     this.setState({
