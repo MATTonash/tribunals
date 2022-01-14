@@ -21,11 +21,15 @@ import "./style/App.css";
 
 // enable to test on dataDectcts script
 import { testHighlights as _testHighlights } from "./dataDetect";
-import { PRIMARY_URL } from "./dataDetect";
+import { PRIMARY_URL, taskIDDic} from "./dataDetect";
 
 
 
-const contentHighlights: Record<string, Array<IHighlight>> = _testHighlights;
+// show the highlight elements
+let hightLightEles = []
+hightLightEles[PRIMARY_URL] = _testHighlights[PRIMARY_URL][0][taskIDDic[0]]
+
+const contentHighlights: Record<string, Array<IHighlight>> = hightLightEles;
 
 
 
@@ -61,14 +65,18 @@ const HighlightPopup = ({
   ) : null;
 
 const PRIMARY_PDF_URL = PRIMARY_URL;
-const SECONDARY_PDF_URL = PRIMARY_URL;
+
 
 const searchParams = new URLSearchParams(document.location.search);
 
 const initialUrl = searchParams.get("url") || PRIMARY_PDF_URL;
 
 // console.log(initialUrl)
+// change the hightlight elements
 let testHighlights = {}
+
+console.log(contentHighlights)
+
 testHighlights[initialUrl] = [contentHighlights[initialUrl][0]]
 
 
@@ -113,7 +121,6 @@ class App extends Component<{}, State> {
   };
 
 
-
   resetHighlights = () => {
     this.setState({
       highlights: [],
@@ -121,15 +128,17 @@ class App extends Component<{}, State> {
   };
 
   toggleDocument = () => {
-    const newUrl =
-      this.state.url === PRIMARY_PDF_URL ? SECONDARY_PDF_URL : PRIMARY_PDF_URL;
+    const newUrl = this.state.url = PRIMARY_PDF_URL
+      // this.state.url === PRIMARY_PDF_URL ? SECONDARY_PDF_URL : PRIMARY_PDF_URL;
 
     this.setState({
       url: newUrl,
-      highlights: testHighlights[newUrl] ? [...testHighlights[newUrl]] : [],
+      // highlights: testHighlights[newUrl] ? [...testHighlights[newUrl]] : [],
+      highlights: testHighlights[newUrl],
     });
   };
 
+  // next task state
   nextTask = () => {
     const newTaskNo = this.state.updateTaskNo = getNextTaskId(this.state.updateTaskNo)
     const newTaskQue = this.state.taskQuestion = getNextTaskQuestion(newTaskNo-1)

@@ -1,0 +1,9 @@
+[
+    {
+        "question": "Judges Name",
+        "hint": "Check on the left panel",
+        "response_type": "free text",
+        "search_function": "on_target",
+        "validation_function": "warning"
+    }
+]

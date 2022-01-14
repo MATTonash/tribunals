@@ -1,12 +1,14 @@
 // libraries imported
 import React, { Component } from "react";
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist/legacy/build/pdf";
+import taskData from '/static/data/taskData.json'
+import pdfList from '/static/data/pdfList.json'
+
 
 // pdf library loaded
 const workerSrc = "https://unpkg.com/pdfjs-dist@2.8.335/build/pdf.worker.min.js"
 let viewportWidth
 let viewportHeight
-
 
 
 // generate the content by the page number
@@ -18,16 +20,8 @@ async function getItems(src, pg){
   const doc = await getDocument(src).promise
   const page = await doc.getPage(pg)
 
-
   const scale = 1;
   const viewport = page.getViewport({ scale });
-  // Support HiDPI-screens.
-  const outputScale = window.devicePixelRatio || 1;
-
-  //
-  // Prepare canvas using PDF page dimensions
-  //
-  // const canvas = document.getElementById("the-canvas");
 
   //divide 0.6 ratio!!! to get the actual page size
   viewportWidth = viewport.width
@@ -35,41 +29,30 @@ async function getItems(src, pg){
   console.log(viewportWidth)
   console.log(viewportHeight)
 
-  // canvas.width = Math.floor(viewport.width * outputScale);
-  // canvas.height = Math.floor(viewport.height * outputScale);
-  // canvas.style.width = Math.floor(viewport.width) + "px";
-  // canvas.style.height = Math.floor(viewport.height) + "px";
-
-
-
-
   return await page.getTextContent()
 
-  // const items = content.items.map((item) => {
-  //   // console.log(item.str)
-  //   // console.log(item.fontName)
-  //   // console.log(item.transform)
-  //   // console.log(item)
-  // })
-  
-  // return content
 }
 
 // define the array for storing the content
 let dataPageArray = []
 const tranformScale = 0.60008553 //transformed scale
-let pageNum, id
+let pageNum
 
-// has to the in string format
 
+console.log(taskData)
+console.log(pdfList)
 
 
 // get the link for the legal document
+// first case judge
 // var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2912/Wolfe,%20David%20070921%20EA20190204.pdf"
-// var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2940/Miller,Phil%20-%20EA-2019-0183%20(06.08.21).pdf"
 // var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2947/EA.2021.0126%20R.%20Miah%20s14%20Decision.pdf"
+
+// second case for judge
+// var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2940/Miller,Phil%20-%20EA-2019-0183%20(06.08.21).pdf"
 // var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2857/Centre%20for%20Criminal%20Appeals%20EA2020-0181%20(040621)-%20JH%20Decision.pdf"
-var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2817/Driver%20Ian%20(EA.2019.0254)%2008.04.21.pdf"
+// var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2817/Driver%20Ian%20(EA.2019.0254)%2008.04.21.pdf"
+var src = "/static/1.pdf"
 
 
 // test the getItems function to generate the content of page 1
@@ -84,359 +67,300 @@ await f.then(function(pageinfo){
 
 
 
-// get the actually content of page 1
-dataPageArray = dataPageArray[0]
-console.log(dataPageArray)
 
 
 
-// function getAllPageContents(dataPageArray){
-//   for (var i=0;i< dataPageArray.length; i++){
-
-//   }
-
-// }
-let contentHighlight = {}
-let judgeText = "Judge"
-let appellant = 'Appellant'
-
-for (var i=0;i< dataPageArray.length; i++) {
-
-  let text = dataPageArray[i]['str'].trim()
-  // console.log(text)
+// algo should be like this: concatnate the strings in array based on the same height (in a row)
+// then check if specific word in the concatnated strings,
+// then find out the hightlight region
 
 
-  let matchText
-  let transform
-  let transformedWidth
-  let transformedHeight
-  let transformedLeft
-  let transformedTop
-  let x1, x2, y1, y2
-
-  if (text.toLowerCase().includes(judgeText.toLowerCase())) {
-    console.log(judgeText, i)
-    if (text.length == judgeText.length) {
-      // match prev or next element of array, need to change it later
-      console.log("Only match Judge, need show the name after or before")
-
-     
-      transform = dataPageArray[i]['transform']
-      transformedLeft = transform[4]
-      transformedTop = transform[5]
-
-      transformedWidth = dataPageArray[i]['width']
-      transformedHeight = dataPageArray[i]['height']
 
 
-      // try to match the content after Judge on the same height. write a function for utilisation in later stage
-      let initHeight
-      let curMHeight
-      let subMtext = ''
-      let matchcount = true
-      var j = i + 1
-      while (j < dataPageArray.length && matchcount) {
-        // empty string
-        if (dataPageArray[j]['str'].trim().length === 0 ){
-          console.log("empty string", j)
-        } else { // non empty string found
+// reform the array for storing the contents and highlight information
+function reformTextHighlightArray (dataPageArray) {
+  let transformArray = []
+  var i = 0;
+  while (i < dataPageArray.length) {
 
-          if (!initHeight) {
-            initHeight = dataPageArray[j]['transform'][5]
-            console.log("inti",j)
-          }
-          curMHeight = dataPageArray[j]['transform'][5]
-          console.log(j, curMHeight)
+    // let curStrOfArray = dataPageArray[i]['str']
+    let curSentOnRow = dataPageArray[i]['str']
+    let iniHeight = dataPageArray[i]['transform'][5]
+    let matchcount = 0
+    let curSentWidth = dataPageArray[i]['width'] 
 
-          if(initHeight == curMHeight) {
-            subMtext = subMtext + ' ' + dataPageArray[j]['str'].trim()
-            matchcount = true
-          } else{
-            matchcount = false
-          }
-          
-        }
+
+    var j = i + 1
+
+    while (j < dataPageArray.length && matchcount < 1) {
+      let nextHeight = dataPageArray[j]['transform'][5]
+      let nextStrOfArray = dataPageArray[j]['str']
+      let nextWidth = dataPageArray[j]['width'] 
+      
+      // concatnate the string into a sentence based on the same height
+      if (nextHeight != iniHeight){
+        iniHeight = nextHeight
+        matchcount ++
+      }
+
+      if (matchcount < 1) {
+        curSentOnRow = curSentOnRow + nextStrOfArray
+        curSentWidth = curSentWidth + nextWidth
         j ++
       }
-      
-      matchText = subMtext.trim()
-
-      console.log(matchText)
-      
-
-
-      console.log(transform)
-      console.log(transformedLeft)
-      console.log(transformedTop)
-      console.log(transformedWidth)
-      console.log(transformedHeight)
-
-      x1 = transformedLeft/tranformScale
-      y1 = (viewportHeight - transformedTop - transformedHeight)/tranformScale
-      x2 = x1 + transformedWidth/tranformScale
-      y2 = y1 + transformedHeight/tranformScale
-
-      console.log(x1, y1, x2, y2)
-      // judgeText.charAt(0).toUpperCase() + judgeText.slice(1)
-      contentHighlight[judgeText] = 
-      {"contentText":matchText, "conmentText": judgeText,
-                "x1":x1, "y1":y1, "x2":x2, "y2":y2, 
-                "height":viewportHeight/tranformScale,
-                "width":viewportWidth/tranformScale,
-              "pageNumber":pageNum,
-            "id": Date.now().toString()}
-
-    
-
-    } else {
-      console.log("remove judge")
-      matchText = text.replace(judgeText, '')
-      matchText = matchText.replace(judgeText.toLowerCase(), '').trim()
-      console.log(matchText)
-
-      //get hight location
-      transform = dataPageArray[i]['transform']
-      transformedLeft = transform[4]
-      transformedTop = transform[5]
-
-      transformedWidth = dataPageArray[i]['width']
-      transformedHeight = dataPageArray[i]['height']
-      console.log(transform)
-      console.log(transformedLeft)
-      console.log(transformedTop)
-
-
-      console.log(transformedWidth)
-      console.log(transformedHeight)
-
-      x1 = transformedLeft/tranformScale
-      y1 = (viewportHeight - transformedTop - transformedHeight)/tranformScale
-      x2 = x1 + transformedWidth/tranformScale
-      y2 = y1 + transformedHeight/tranformScale
-
-      console.log(x1, y1, x2, y2)
-      // judgeText.charAt(0).toUpperCase() + judgeText.slice(1)
-      contentHighlight[judgeText] = 
-      {"contentText":matchText, "conmentText": judgeText,
-                "x1":x1, "y1":y1, "x2":x2, "y2":y2, 
-                "height":viewportHeight/tranformScale,
-                "width":viewportWidth/tranformScale,
-              "pageNumber":pageNum,
-            "id": Date.now().toString()}
-    }
-
-  // match appellant process
-  } else if (text.toLowerCase().includes(appellant.toLowerCase()))  {
-    console.log(appellant, i)
-    if (text.length == appellant.length) {
-      console.log("Only match appellant, need show the name after or before")
-
-      transform = dataPageArray[i]['transform']
-      transformedLeft = transform[4]
-      transformedTop = transform[5]
-
-      transformedWidth = dataPageArray[i]['width']
-      transformedHeight = dataPageArray[i]['height']
-      console.log(transform)
-      console.log(transformedLeft)
-      console.log(transformedTop)
-      console.log(transformedWidth)
-      console.log(transformedHeight)
-
-      // try to match the content after Appellant on the same height. write a function for utilisation in later stage
-      let initHeight
-      let curMHeight
-      let subMtext = ''
-      let matchcount = true
-      let c = ''
-      let curWidth, preWidth
-
-      var j = i - 1
-      while (j >= 0 && matchcount) {
-        // empty string
-        if (dataPageArray[j]['str'].trim().length === 0 ){
-          console.log("empty string", j)
-        } else { // non empty string found
-
-          if (!initHeight) {
-            initHeight = dataPageArray[j]['transform'][5]
-            console.log("inti",j)
-          }
-          curMHeight = dataPageArray[j]['transform'][5]
-          console.log(j, curMHeight)
-
-          if(initHeight == curMHeight) {
-            // write condition for c is space or not
-            curWidth = dataPageArray[j]['transform'][4]
-            if (preWidth - curWidth < 2){
-              c = ' '
-            } else {
-              c = ''
-            }
-
-            subMtext = dataPageArray[j]['str'].trim() + c + subMtext
-            matchcount = true
-          } else{
-            matchcount = false
-          }
-
-          preWidth = dataPageArray[j]['transform'][4] + dataPageArray[j]['width']
-          
-        }
-        j --
-      }
-
-      matchText = subMtext.trim()
-
-      console.log(matchText)
-
-
-
-
-
-      x1 = transformedLeft/tranformScale
-      y1 = (viewportHeight - transformedTop - transformedHeight)/tranformScale
-      x2 = x1 + transformedWidth/tranformScale
-      y2 = y1 + transformedHeight/tranformScale
-
-      console.log(x1, y1, x2, y2)
-      // judgeText.charAt(0).toUpperCase() + judgeText.slice(1)
-      contentHighlight[appellant] = 
-      {"contentText":matchText, "conmentText": appellant,
-                "x1":x1, "y1":y1, "x2":x2, "y2":y2, 
-                "height":viewportHeight/tranformScale,
-                "width":viewportWidth/tranformScale,
-              "pageNumber":pageNum,
-            "id": Date.now().toString()}
-
-
-    } else {
-      transform = dataPageArray[i]['transform']
-      transformedLeft = transform[4]
-      transformedTop = transform[5]
-
-      transformedWidth = dataPageArray[i]['width']
-      transformedHeight = dataPageArray[i]['height']
-      console.log(transform)
-      console.log(transformedLeft)
-      console.log(transformedTop)
-
-
-      console.log(transformedWidth)
-      console.log(transformedHeight)
-
-      x1 = transformedLeft/tranformScale
-      y1 = (viewportHeight - transformedTop - transformedHeight)/tranformScale
-      x2 = x1 + transformedWidth/tranformScale
-      y2 = y1 + transformedHeight/tranformScale
-
-      console.log(x1, y1, x2, y2)
- 
-      console.log("fewfhewoifhew")
-
-      contentHighlight[appellant] = 
-      {"contentText":matchText, "conmentText": appellant,
-                "x1":x1, "y1":y1, "x2":x2, "y2":y2, 
-                "height":viewportHeight/tranformScale,
-                "width":viewportWidth/tranformScale,
-              "pageNumber":pageNum,
-            "id": Date.now().toString()}
 
     }
 
+    if (curSentOnRow[0] != ' ') {
+      // console.log(curSentOnRow)
+      // console.log("i", i) 
+      // console.log("j", j) 
+      transformArray.push({"org_i":i,"org_j":j,'str':curSentOnRow,'transformedLeft':dataPageArray[i]['transform'][4], 
+        "transformedTop":dataPageArray[i]['transform'][5],"transformedWidth": curSentWidth,
+        "transformedHeight":dataPageArray[i]['height'], "single_c_wid":curSentWidth/curSentOnRow.length,
+        "sentLen":curSentOnRow.length})
+      i = j 
+    } else {
+      i++
+    }
   }
-
+  return transformArray
 }
 
 
 
 
 
+// search for the content and highlight information by using regex
+function matchWord(transformArray, b4OrAfter, regex, pageNum){
+  let matchWords
+  let foundArray = []
+  let x1, x2, y1, y2
 
+  // match the words after the specific words
+  if (b4OrAfter == 'after') {
+    for (var i=0;i < transformArray.length; i++) {
+
+      let sent = transformArray[i]['str']
+      const match = sent.match(regex)
+
+      if (match) {
+        let startIdx = match['index']
+        let numC = startIdx + match[1].length
+
+        console.log("Only match words after Judge", i)
+        console.log(match, numC)
+        console.log(transformArray[i]['transformedLeft'])
+        if (match[2]){
+          matchWords = match[2]
+          x1 = (transformArray[i]['transformedLeft'] + numC*transformArray[i]['single_c_wid'])/tranformScale
+          x2 = x1 + ((matchWords.length + 1)* transformArray[i]['single_c_wid'])/tranformScale
+          y1 = (viewportHeight - transformArray[i]["transformedTop"] - transformArray[i]["transformedHeight"])/tranformScale
+          y2 = y1 + transformArray[i]["transformedHeight"]/tranformScale
+
+              
+
+        } else {
+          console.log("need to fix the bug for judge, matching words might be in next line")
+
+
+        }
+        foundArray.push({"contentText":match[2], "conmentText": match[1].trim(),
+                        "x1":x1, "y1":y1, "x2":x2, "y2":y2, 
+                        "height":viewportHeight/tranformScale,
+                        "width":viewportWidth/tranformScale,
+                      "pageNumber":pageNum,
+                    "id": Date.now().toString()})
+      }
+    }
+  } else if (b4OrAfter == 'b4'){ // match the words before the specific words
+    for (var i=1;i < transformArray.length; i++) {
+      let sent = transformArray[i]['str']
+      const match = sent.match(regex)
+
+      if (match){
+        console.log(match)
+        if (match[1]) {
+          matchWords = match[1]
+
+          console.log(matchWords)
+          x1 = transformArray[i]['transformedLeft']/tranformScale
+          x2 = (transformArray[i]['transformedLeft'] + transformArray[i]['str'].length * transformArray[i]['single_c_wid'])/tranformScale
+          y1 = (viewportHeight - transformArray[i]["transformedTop"] - transformArray[i]["transformedHeight"])/tranformScale
+          y2 = y1 + transformArray[i]["transformedHeight"]/tranformScale
+
+        } else {
+          matchWords = transformArray[i-1]['str']
+          x1 = transformArray[i-1]['transformedLeft']/tranformScale
+          x2 = (transformArray[i-1]['transformedLeft'] + transformArray[i-1]['str'].length * transformArray[i-1]['single_c_wid'])/tranformScale
+          y1 = (viewportHeight - transformArray[i-1]["transformedTop"] - transformArray[i-1]["transformedHeight"])/tranformScale
+          y2 = (viewportHeight - transformArray[i-1]["transformedTop"] - transformArray[i-1]["transformedHeight"] + 
+            transformArray[i-1]["transformedHeight"])/tranformScale
+        }
+        foundArray.push({"contentText":matchWords.trim(), "conmentText": match[2],
+          "x1":x1, "y1":y1, "x2":x2, "y2":y2, 
+          "height":viewportHeight/tranformScale,
+          "width":viewportWidth/tranformScale,
+        "pageNumber":pageNum, "id": Date.now().toString()})
+        
+      }
+
+    }
+
+  }
+
+  return foundArray
+}
+
+
+// generate the hightlight elements for react
+function generateHighlightArray (array){
+  let newArray = []
+  for(var i=0;i<array.length;i++){
+    newArray.push({
+      content: {
+        text: array[i]["contentText"],
+      },
+      position: {
+        boundingRect: {
+          x1: array[i]["x1"],
+          x2: array[i]["x2"],
+          y1: array[i]["y1"],
+          y2: array[i]["y2"],
+          height: array[i]["height"],
+          width: array[i]["width"],
+        },
+        rects: [
+          {
+            x1: array[i]["x1"],
+            x2: array[i]["x2"],
+            y1: array[i]["y1"],
+            y2: array[i]["y2"],
+            height: array[i]["height"],
+            width: array[i]["width"],
+          },
+        ],
+        pageNumber: array[i]["pageNumber"],
+      },
+      comment: {
+        emoji: "",
+        text: array[i]["conmentText"],
+      },
+      id: array[i]["id"],
+    })
+  }
+  return newArray
+}
+
+// show the specific contents by matching array
+function selectTaskToShow(taskID, task, array){
+  let contentHighlight = generateHighlightArray(array[taskID][task])
+  return contentHighlight
+}
+
+
+function generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType) {
+  let regex = new RegExp(searchPattern, matchType)
+  b4OrAfterLine = 'after'
+  return matchWord(transformArray, b4OrAfterLine, regex, pageNum)
+}
+
+
+function generateKeysForTask(taskArray){
+  let taskIdxToName = {}
+  for (var i=0;i<taskArray.length;i++){
+    for (var j in taskArray[i]){
+      var sub_key = j
+    }
+    taskIdxToName[i] = sub_key
+  }
+  return taskIdxToName
+}
+
+
+//code for the main script
+// get the actually content of page 1
+dataPageArray = dataPageArray[0] //array is the first element of the dictionary
+console.log(dataPageArray)
+
+
+let contentHighlight = []
+let judgeText = "Judge"
+let reference = 'Appeal Reference:|Appeal number:'
+let tribunalMembers = 'Tribunal Members'
+let appellant = 'Appellant'
+let taskArray = []
+let transformArray = []
+let eachTask = {}
+
+
+transformArray = reformTextHighlightArray (dataPageArray)
+console.log(transformArray)
+
+let searchPattern
+let b4OrAfterLine
+let matchType
+
+// task for judge
+searchPattern = "\(" + judgeText + " \)\(\\w+ \\w+\)"
+b4OrAfterLine = 'after'
+matchType = 'i'
+eachTask[judgeText] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
+taskArray.push(eachTask)
+
+eachTask = {}
+searchPattern = "\(" + reference + "\)\(.*\)"
+b4OrAfterLine = 'after'
+matchType = 'i'
+eachTask[reference] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
+taskArray.push(eachTask)
+
+eachTask = {}
+searchPattern = "\(.*\)\(" + appellant + "\) $"
+b4OrAfterLine = 'b4'
+matchType = 'i'
+eachTask[appellant] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
+taskArray.push(eachTask)
+
+eachTask = {}
+searchPattern = "\(" + tribunalMembers + "? \)\(\\w+ \\w+\)"
+b4OrAfterLine = 'after'
+matchType = 'i'
+eachTask[tribunalMembers] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
+taskArray.push(eachTask)
+
+
+
+
+console.log(taskArray)
+console.log(taskArray.length)
+
+
+
+//task ID and taskName are matached
+let taskIdxToName
+
+taskIdxToName = generateKeysForTask(taskArray)
+
+for (var i=0;i<taskArray.length;i++) {
+  let tempDic = {}
+  tempDic[taskIdxToName[i]] = selectTaskToShow(i, taskIdxToName[i], taskArray)
+  contentHighlight.push(tempDic)
+}
+// contentHighlight = selectTaskToShow(taskID, taskIdxToName[3], taskArray)
 
 
 console.log(contentHighlight)
+console.log(contentHighlight[3])
 
+
+// export generated data for all the tasks
 export let PRIMARY_URL
+export let testHighlights = {}
+export let taskIDDic, totalTasks
 
 PRIMARY_URL = src
-
-
-export let testHighlights = {}
-
-testHighlights[PRIMARY_URL] = [
-  {
-    content: {
-      text: contentHighlight[judgeText]["contentText"],
-    },
-    position: {
-      boundingRect: {
-        x1: contentHighlight[judgeText]["x1"],
-        x2: contentHighlight[judgeText]["x2"],
-        y1: contentHighlight[judgeText]["y1"],
-        y2: contentHighlight[judgeText]["y2"],
-        height: contentHighlight[judgeText]["height"],
-        width: contentHighlight[judgeText]["width"],
-      },
-      rects: [
-        {
-          x1: contentHighlight[judgeText]["x1"],
-          x2: contentHighlight[judgeText]["x2"],
-          y1: contentHighlight[judgeText]["y1"],
-          y2: contentHighlight[judgeText]["y2"],
-          height: contentHighlight[judgeText]["height"],
-          width: contentHighlight[judgeText]["width"],
-        },
-      ],
-      pageNumber: contentHighlight[judgeText]["pageNumber"],
-    },
-    comment: {
-      emoji: "",
-      text: contentHighlight[judgeText]["conmentText"],
-    },
-    id: contentHighlight[judgeText]["id"],
-  },
-
-
-  
-  
-]
-
-
-
-// export const testHighlights = {
-//   PRIMARY_URL: [
-//         {
-//           content: {
-//             text: contentHighlight[judgeText]["contentText"],
-//           },
-//           position: {
-//             boundingRect: {
-//               x1: contentHighlight[judgeText]["x1"],
-//               x2: contentHighlight[judgeText]["x2"],
-//               y1: contentHighlight[judgeText]["y1"],
-//               y2: contentHighlight[judgeText]["y2"],
-//               height: contentHighlight[judgeText]["height"],
-//               width: contentHighlight[judgeText]["width"],
-//             },
-//             rects: [
-//               {
-//                 x1: contentHighlight[judgeText]["x1"],
-//                 x2: contentHighlight[judgeText]["x2"],
-//                 y1: contentHighlight[judgeText]["y1"],
-//                 y2: contentHighlight[judgeText]["y2"],
-//                 height: contentHighlight[judgeText]["height"],
-//                 width: contentHighlight[judgeText]["width"],
-//               },
-//             ],
-//             pageNumber: contentHighlight[judgeText]["pageNumber"],
-//           },
-//           comment: {
-//             emoji: "",
-//             text: contentHighlight[judgeText]["conmentText"],
-//           },
-//           id: contentHighlight[judgeText]["id"],
-//         },
-//     ],
-// }
-
+// testHighlights[PRIMARY_URL] = contentHighlight[0][taskIdxToName[0]]
+testHighlights[PRIMARY_URL] = contentHighlight
+taskIDDic = taskIdxToName
+totalTasks = contentHighlight
