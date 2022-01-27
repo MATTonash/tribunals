@@ -1,14 +1,17 @@
 // libraries imported
-import React, { Component } from "react";
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist/legacy/build/pdf";
-import taskData from '/static/data/taskData.json'
+import taskJson from '/static/data/taskData.json'
 import pdfList from '/static/data/pdfList.json'
+import expList from '/static/data/experiment.json'
 
 
 // pdf library loaded
 const workerSrc = "https://unpkg.com/pdfjs-dist@2.8.335/build/pdf.worker.min.js"
+
+
 let viewportWidth
 let viewportHeight
+
 
 
 // generate the content by the page number
@@ -39,8 +42,9 @@ const tranformScale = 0.60008553 //transformed scale
 let pageNum
 
 
-console.log(taskData)
+console.log(taskJson)
 console.log(pdfList)
+console.log(expList)
 
 
 // get the link for the legal document
@@ -52,8 +56,13 @@ console.log(pdfList)
 // var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2940/Miller,Phil%20-%20EA-2019-0183%20(06.08.21).pdf"
 // var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2857/Centre%20for%20Criminal%20Appeals%20EA2020-0181%20(040621)-%20JH%20Decision.pdf"
 // var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2817/Driver%20Ian%20(EA.2019.0254)%2008.04.21.pdf"
-var src = "/static/1.pdf"
 
+const pdfIdx = 'pdfID'
+const taskIdx = 'taskID'
+const expIdx = "exp_0003"
+var src = pdfList[0][expList[0][expIdx][pdfIdx]]
+
+console.log(src)
 
 // test the getItems function to generate the content of page 1
 console.log("grab info from pages")

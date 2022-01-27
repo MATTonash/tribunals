@@ -44,7 +44,8 @@
     "lodash.debounce": "^4.0.8",
     "pdf-lib": "^1.17.0",
     "pdfjs-dist": "2.8.335",
-    "react-rnd": "^10.1.10"
+    "react-rnd": "^10.1.10",
+    "react-router-dom": "^6.2.1"
   },
   "repository": {
     "type": "git",

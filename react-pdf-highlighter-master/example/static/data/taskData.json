@@ -1,9 +1,18 @@
 [
     {
-        "question": "Judges Name",
-        "hint": "Check on the left panel",
-        "response_type": "free text",
-        "search_function": "on_target",
-        "validation_function": "warning"
+        "task_0001": {
+            "question": "Judges Name",
+            "hint": "Check on the left panel",
+            "response_type": "free text",
+            "search_function": "on_target",
+            "validation_function": "warning"
+        },
+        "task_0002": {
+            "question": "Appellant Name",
+            "hint": "Check on the left panel",
+            "response_type": "free text",
+            "search_function": "on_target",
+            "validation_function": "warning"
+        }
     }
 ]
