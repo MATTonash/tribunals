@@ -1,18 +1,34 @@
-[
-    {
-        "task_0001": {
-            "question": "Judges Name",
-            "hint": "Check on the left panel",
-            "response_type": "free text",
-            "search_function": "on_target",
-            "validation_function": "warning"
-        },
-        "task_0002": {
-            "question": "Appellant Name",
-            "hint": "Check on the left panel",
-            "response_type": "free text",
-            "search_function": "on_target",
-            "validation_function": "warning"
-        }
+{
+    "task_0001": {
+        "question": "What is the Judges Name?",
+        "hint": "Check on the left panel",
+        "response_type": "free text",
+        "search_function": "on_target",
+        "searchPattern": "Judge",
+        "validation_function": "warning"
+    },
+    "task_0002": {
+        "question": "What is the Appeal Reference Number?",
+        "hint": "Check on the left panel",
+        "response_type": "free text",
+        "search_function": "on_target",
+        "searchPattern": "Appeal Reference:|Appeal number:",
+        "validation_function": "warning"
+    },
+    "task_0003": {
+        "question": "What is the Appellant Name?",
+        "hint": "Check on the left panel",
+        "response_type": "free text",
+        "search_function": "on_target",
+        "searchPattern": "Appellant",
+        "validation_function": "warning"
+    },
+    "task_0004": {
+        "question": "What are the Tribunal Members?",
+        "hint": "Check on the left panel",
+        "response_type": "free text",
+        "search_function": "on_target",
+        "searchPattern": "Tribunal Members",
+        "validation_function": "warning"
     }
-]
+}

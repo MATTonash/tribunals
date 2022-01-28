@@ -1,21 +1,22 @@
 // libraries imported
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist/legacy/build/pdf";
-import taskJson from '/static/data/taskData.json'
+import taskList from '/static/data/taskData.json'
 import pdfList from '/static/data/pdfList.json'
 import expList from '/static/data/experiment.json'
+import { TextContent, TextItem } from "pdfjs-dist/types/display/api";
 
 
 // pdf library loaded
 const workerSrc = "https://unpkg.com/pdfjs-dist@2.8.335/build/pdf.worker.min.js"
 
 
-let viewportWidth
-let viewportHeight
+let viewportWidth:number
+let viewportHeight:number
 
 
 
 // generate the content by the page number
-async function getItems(src, pg){
+async function getItems(src: string, pg: number){
 
   if (typeof workerSrc === "string") {
     GlobalWorkerOptions.workerSrc = workerSrc
@@ -37,12 +38,13 @@ async function getItems(src, pg){
 }
 
 // define the array for storing the content
-let dataPageArray = []
-const tranformScale = 0.60008553 //transformed scale
-let pageNum
+let dataPageArray: TextItem[] 
+// let dataPageArray=[]
+const tranformScale: number = 0.60008553 //transformed scale
+let pageNum: number
 
 
-console.log(taskJson)
+console.log(taskList)
 console.log(pdfList)
 console.log(expList)
 
@@ -57,24 +59,36 @@ console.log(expList)
 // var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2857/Centre%20for%20Criminal%20Appeals%20EA2020-0181%20(040621)-%20JH%20Decision.pdf"
 // var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2817/Driver%20Ian%20(EA.2019.0254)%2008.04.21.pdf"
 
-const pdfIdx = 'pdfID'
-const taskIdx = 'taskID'
-const expIdx = "exp_0003"
-var src = pdfList[0][expList[0][expIdx][pdfIdx]]
 
-console.log(src)
+type ExperimentComp = {
+  src: string;
+  taskIDs: any[];
+}
+
+
+const expIdx: string = "exp_0001"
+const pdfIdx: string = 'pdfID'
+const taskIDs: string = 'taskIDs'
+
+let expComp: ExperimentComp  = {
+  src : pdfList[expList[expIdx][pdfIdx]],
+  taskIDs : expList[expIdx][taskIDs],
+}
+
+
+console.log(expComp.taskIDs)
 
 // test the getItems function to generate the content of page 1
 console.log("grab info from pages")
 pageNum = 1
-let f = getItems(src, pageNum)
+let f:Promise<TextContent> = getItems(expComp.src, pageNum)
 
 // grab the content of page 1 into array
-await f.then(function(pageinfo){ 
-  dataPageArray.push(pageinfo.items);
+await f.then(function(pageinfo: TextContent){ 
+  console.log(pageinfo.items)
+  // dataPageArray.push(pageinfo.items);
+  dataPageArray=pageinfo.items
 })
-
-
 
 
 
@@ -87,9 +101,9 @@ await f.then(function(pageinfo){
 
 
 // reform the array for storing the contents and highlight information
-function reformTextHighlightArray (dataPageArray) {
+function reformTextHighlightArray (dataPageArray:TextItem[]) {
   let transformArray = []
-  var i = 0;
+  var i:number = 0;
   while (i < dataPageArray.length) {
 
     // let curStrOfArray = dataPageArray[i]['str']
@@ -141,7 +155,7 @@ function reformTextHighlightArray (dataPageArray) {
 
 
 // search for the content and highlight information by using regex
-function matchWord(transformArray, b4OrAfter, regex, pageNum){
+function matchWord(transformArray:any[], b4OrAfter: string, regex:RegExp, pageNum: number){
   let matchWords
   let foundArray = []
   let x1, x2, y1, y2
@@ -223,7 +237,7 @@ function matchWord(transformArray, b4OrAfter, regex, pageNum){
 
 
 // generate the hightlight elements for react
-function generateHighlightArray (array){
+function generateHighlightArray (array: any[]){
   let newArray = []
   for(var i=0;i<array.length;i++){
     newArray.push({
@@ -262,24 +276,25 @@ function generateHighlightArray (array){
 }
 
 // show the specific contents by matching array
-function selectTaskToShow(taskID, task, array){
+function selectTaskToShow(taskID: number, task: string, array: any[]){
   let contentHighlight = generateHighlightArray(array[taskID][task])
   return contentHighlight
 }
 
 
-function generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType) {
-  let regex = new RegExp(searchPattern, matchType)
+function generateMatchingArray(searchPattern:string, b4OrAfterLine:string, 
+  transformArray:any[], pageNum:number, matchType:string) {
+  let regex:RegExp = new RegExp(searchPattern, matchType)
   b4OrAfterLine = 'after'
   return matchWord(transformArray, b4OrAfterLine, regex, pageNum)
 }
 
 
-function generateKeysForTask(taskArray){
-  let taskIdxToName = {}
+function generateKeysForTask(taskArray:any[]){
+  let taskIdxToName:any = {}
   for (var i=0;i<taskArray.length;i++){
     for (var j in taskArray[i]){
-      var sub_key = j
+      var sub_key:string|undefined = j
     }
     taskIdxToName[i] = sub_key
   }
@@ -287,62 +302,76 @@ function generateKeysForTask(taskArray){
 }
 
 
-//code for the main script
-// get the actually content of page 1
-dataPageArray = dataPageArray[0] //array is the first element of the dictionary
 console.log(dataPageArray)
 
 
+function switchSearchFunction (searchToken:string,
+  transformArray:any[], pageNum:number) {
+
+  let eachTask:any = {}
+  let searchPattern: any
+  let b4OrAfterLine: string
+  let matchType: string
+  // console.log(transformArray)
+
+  if (searchToken === "Judge") {
+    searchPattern = "\(" + searchToken + " \)\(\\w+ \\w+\)"
+    b4OrAfterLine = 'after'
+    matchType = 'i'
+    eachTask[searchToken] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
+    taskArray.push(eachTask)
+  } else if (searchToken === "Appeal Reference:|Appeal number:") {
+    searchPattern = "\(" + searchToken + "\)\(.*\)"
+    b4OrAfterLine = 'after'
+    matchType = 'i'
+    eachTask[searchToken] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
+
+  } else if (searchToken === "Tribunal Members") {
+    searchPattern = "\(" + searchToken + "? \)\(\\w+ \\w+\)"
+    b4OrAfterLine = 'after'
+    matchType = 'i'
+    eachTask[searchToken] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
+
+  } else if (searchToken === "Appellant"){
+    searchPattern = "\(.*\)\(" + searchToken + "\) $"
+    b4OrAfterLine = 'b4'
+    matchType = 'i'
+    eachTask[searchToken] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
+
+  }
+  return eachTask
+}
+
+function generateTaskArray(taskIDs: any[], taskList: any, transformArray:any[], pageNum:number) {
+  let taskArray = []
+  Object.entries(taskIDs).forEach(([key, value]) => {
+    // console.log(taskList[key], value)
+    let searchToken:string = taskList[key]['searchPattern']
+    // console.log(searchToken)
+    taskArray.push(switchSearchFunction(searchToken, transformArray, pageNum))
+
+
+  })
+  return taskArray
+}
+
+
+
+
+
 let contentHighlight = []
-let judgeText = "Judge"
-let reference = 'Appeal Reference:|Appeal number:'
-let tribunalMembers = 'Tribunal Members'
-let appellant = 'Appellant'
 let taskArray = []
 let transformArray = []
-let eachTask = {}
+
 
 
 transformArray = reformTextHighlightArray (dataPageArray)
 console.log(transformArray)
 
-let searchPattern
-let b4OrAfterLine
-let matchType
 
-// task for judge
-searchPattern = "\(" + judgeText + " \)\(\\w+ \\w+\)"
-b4OrAfterLine = 'after'
-matchType = 'i'
-eachTask[judgeText] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
-taskArray.push(eachTask)
-
-eachTask = {}
-searchPattern = "\(" + reference + "\)\(.*\)"
-b4OrAfterLine = 'after'
-matchType = 'i'
-eachTask[reference] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
-taskArray.push(eachTask)
-
-eachTask = {}
-searchPattern = "\(.*\)\(" + appellant + "\) $"
-b4OrAfterLine = 'b4'
-matchType = 'i'
-eachTask[appellant] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
-taskArray.push(eachTask)
-
-eachTask = {}
-searchPattern = "\(" + tribunalMembers + "? \)\(\\w+ \\w+\)"
-b4OrAfterLine = 'after'
-matchType = 'i'
-eachTask[tribunalMembers] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
-taskArray.push(eachTask)
+taskArray = generateTaskArray(expComp.taskIDs, taskList, transformArray, pageNum)
 
 
-
-
-console.log(taskArray)
-console.log(taskArray.length)
 
 
 
@@ -368,7 +397,7 @@ export let PRIMARY_URL
 export let testHighlights = {}
 export let taskIDDic, totalTasks
 
-PRIMARY_URL = src
+PRIMARY_URL = expComp.src
 // testHighlights[PRIMARY_URL] = contentHighlight[0][taskIdxToName[0]]
 testHighlights[PRIMARY_URL] = contentHighlight
 taskIDDic = taskIdxToName

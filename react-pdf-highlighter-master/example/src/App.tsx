@@ -21,7 +21,7 @@ import "./style/App.css";
 
 // enable to test on dataDectcts script
 import { testHighlights as _testHighlights } from "./dataDetect";
-import { PRIMARY_URL, taskIDDic} from "./dataDetect";
+import { PRIMARY_URL, taskIDDic } from "./dataDetect";
 
 
 
@@ -38,7 +38,7 @@ interface State {
   highlights: Array<IHighlight>;
   updateTaskNo: number;
   taskQuestion: string;
-  suggestion:string;
+  suggestion: string;
 }
 
 
@@ -81,9 +81,9 @@ testHighlights[initialUrl] = [contentHighlights[initialUrl][0]]
 
 
 var curTaskID = 1;
-const taskList = ["What is the Judge's name?", "What is the Appellant's name?", 
-                  "What is the Respondents' name?"]; 
-const sugList = ["Judge", "Appellant", "Respondents"]; 
+const taskList = ["What is the Judge's name?", "What is the Appellant's name?",
+  "What is the Respondents' name?"];
+const sugList = ["Judge", "Appellant", "Respondents"];
 
 const curTaskQuestion = taskList[0]
 const curSug = sugList[0]
@@ -97,7 +97,7 @@ function getNextTaskQuestion(idx: number) {
 }
 
 function getNextTaskSuggestion(idx: number) {
-  testHighlights = {initialUrl : [contentHighlights[initialUrl][idx-1]]}
+  testHighlights = { initialUrl: [contentHighlights[initialUrl][idx - 1]] }
   return testHighlights;
 }
 
@@ -129,7 +129,7 @@ class App extends Component<{}, State> {
 
   toggleDocument = () => {
     const newUrl = this.state.url = PRIMARY_PDF_URL
-      // this.state.url === PRIMARY_PDF_URL ? SECONDARY_PDF_URL : PRIMARY_PDF_URL;
+    // this.state.url === PRIMARY_PDF_URL ? SECONDARY_PDF_URL : PRIMARY_PDF_URL;
 
     this.setState({
       url: newUrl,
@@ -141,8 +141,8 @@ class App extends Component<{}, State> {
   // next task state
   nextTask = () => {
     const newTaskNo = this.state.updateTaskNo = getNextTaskId(this.state.updateTaskNo)
-    const newTaskQue = this.state.taskQuestion = getNextTaskQuestion(newTaskNo-1)
-    const newSug = this.state.suggestion = getNextSug(newTaskNo-1)
+    const newTaskQue = this.state.taskQuestion = getNextTaskQuestion(newTaskNo - 1)
+    const newSug = this.state.suggestion = getNextSug(newTaskNo - 1)
     const newHighlight = this.state.highlights = getNextTaskSuggestion(newTaskNo)
 
 
@@ -151,13 +151,13 @@ class App extends Component<{}, State> {
       updateTaskNo: newTaskNo,
       taskQuestion: newTaskQue,
       suggestion: newSug,
-      highlights : newHighlight[initialUrl],
+      highlights: newHighlight[initialUrl],
 
-      
+
     });
   };
 
-  
+
   scrollViewerTo = (highlight: any) => { };
 
   scrollToHighlightFromHash = () => {
@@ -193,7 +193,7 @@ class App extends Component<{}, State> {
     });
   }
 
-    // only update the image highlight by dragging the mouse
+  // only update the image highlight by dragging the mouse
   updateHighlight(highlightId: string, position: Object, content: Object) {
 
     console.log("Updating highlight", highlightId, position, content);
@@ -219,7 +219,7 @@ class App extends Component<{}, State> {
   }
 
   render() {
-    const { url, highlights, updateTaskNo, taskQuestion, suggestion} = this.state;
+    const { url, highlights, updateTaskNo, taskQuestion, suggestion } = this.state;
 
     return (
       <div className="App" style={{ display: "flex", height: "100vh" }}>
@@ -249,7 +249,7 @@ class App extends Component<{}, State> {
                 // pdfScaleValue="page-width"
                 scrollRef={(scrollTo) => {
                   this.scrollViewerTo = scrollTo;
-         
+
                   this.scrollToHighlightFromHash();
                 }}
                 onSelectionFinished={(

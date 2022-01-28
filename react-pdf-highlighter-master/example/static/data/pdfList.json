@@ -1,9 +1,7 @@
-[
-    {
-        "pdf_1": "/static/1.pdf",
-        "pdf_2": "/static/2.pdf",
-        "pdf_3": "/static/3.pdf",
-        "pdf_4": "/static/4.pdf",
-        "pdf_5": "/static/5.pdf"
-    }
-]
+{
+    "pdf_1": "/static/1.pdf",
+    "pdf_2": "/static/2.pdf",
+    "pdf_3": "/static/3.pdf",
+    "pdf_4": "/static/4.pdf",
+    "pdf_5": "/static/5.pdf"
+}
