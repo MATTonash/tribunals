@@ -21,19 +21,21 @@ import "./style/App.css";
 
 // enable to test on dataDectcts script
 import { testHighlights as _testHighlights } from "./dataDetect";
-import { PRIMARY_URL, taskIDDic } from "./dataDetect";
+// import { PRIMARY_URL, taskIDDic } from "./dataDetect";
 
+import { PRIMARY_URL } from "./dataDetect";
 
 
 // show the highlight elements
-let hightLightEles = []
-hightLightEles[PRIMARY_URL] = _testHighlights[PRIMARY_URL][0][taskIDDic[0]]
+// let hightLightEles = []
+// hightLightEles[PRIMARY_URL] = _testHighlights[PRIMARY_URL][0][taskIDDic[0]]
 
-const contentHighlights: Record<string, Array<IHighlight>> = hightLightEles;
+const contentHighlights: Record<string, Array<IHighlight>> = _testHighlights;
 
 
 
 interface State {
+  login: boolean;
   url: string;
   highlights: Array<IHighlight>;
   updateTaskNo: number;
@@ -41,7 +43,7 @@ interface State {
   suggestion: string;
 }
 
-
+console.log(contentHighlights)
 
 
 const getNextId = () => String(Math.random()).slice(2);
@@ -79,6 +81,9 @@ console.log(contentHighlights)
 
 testHighlights[initialUrl] = [contentHighlights[initialUrl][0]]
 
+console.log(testHighlights)
+
+
 
 var curTaskID = 1;
 const taskList = ["What is the Judge's name?", "What is the Appellant's name?",
@@ -111,6 +116,7 @@ console.log(getNextSug(2))
 
 class App extends Component<{}, State> {
   state = {
+    login: false,
     url: initialUrl,
     highlights: testHighlights[initialUrl]
       ? [...testHighlights[initialUrl]]

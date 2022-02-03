@@ -156,24 +156,31 @@ function reformTextHighlightArray (dataPageArray:TextItem[]) {
 
 // search for the content and highlight information by using regex
 function matchWord(transformArray:any[], b4OrAfter: string, regex:RegExp, pageNum: number){
+  // console.log("match word:")
+  // console.log(transformArray, b4OrAfter, regex, pageNum)
+
   let matchWords
   let foundArray = []
   let x1, x2, y1, y2
 
   // match the words after the specific words
   if (b4OrAfter == 'after') {
+    // console.log("in after here")
+    // console.log(regex)
+
     for (var i=0;i < transformArray.length; i++) {
 
       let sent = transformArray[i]['str']
       const match = sent.match(regex)
 
+
       if (match) {
         let startIdx = match['index']
         let numC = startIdx + match[1].length
 
-        console.log("Only match words after Judge", i)
-        console.log(match, numC)
-        console.log(transformArray[i]['transformedLeft'])
+        // console.log("Only match words after Judge", i)
+        // console.log(match, numC)
+        // console.log(transformArray[i]['transformedLeft'])
         if (match[2]){
           matchWords = match[2]
           x1 = (transformArray[i]['transformedLeft'] + numC*transformArray[i]['single_c_wid'])/tranformScale
@@ -184,8 +191,13 @@ function matchWord(transformArray:any[], b4OrAfter: string, regex:RegExp, pageNu
               
 
         } else {
-          console.log("need to fix the bug for judge, matching words might be in next line")
-
+          // console.log("need to fix the bug for judge, matching words might be in next line")
+          matchWords = transformArray[i+1]['str']
+          x1 = transformArray[i+1]['transformedLeft']/tranformScale
+          x2 = (transformArray[i+1]['transformedLeft'] + transformArray[i+1]['str'].length * transformArray[i+1]['single_c_wid'])/tranformScale
+          y1 = (viewportHeight - transformArray[i+1]["transformedTop"] - transformArray[i+1]["transformedHeight"])/tranformScale
+          y2 = (viewportHeight - transformArray[i+1]["transformedTop"] - transformArray[i+1]["transformedHeight"] + 
+            transformArray[i+1]["transformedHeight"])/tranformScale
 
         }
         foundArray.push({"contentText":match[2], "conmentText": match[1].trim(),
@@ -197,12 +209,15 @@ function matchWord(transformArray:any[], b4OrAfter: string, regex:RegExp, pageNu
       }
     }
   } else if (b4OrAfter == 'b4'){ // match the words before the specific words
+    // console.log("in b4 here")
+    // console.log(regex)
     for (var i=1;i < transformArray.length; i++) {
       let sent = transformArray[i]['str']
       const match = sent.match(regex)
+      // console.log(sent, match)
 
       if (match){
-        console.log(match)
+        // console.log(match)
         if (match[1]) {
           matchWords = match[1]
 
@@ -285,7 +300,7 @@ function selectTaskToShow(taskID: number, task: string, array: any[]){
 function generateMatchingArray(searchPattern:string, b4OrAfterLine:string, 
   transformArray:any[], pageNum:number, matchType:string) {
   let regex:RegExp = new RegExp(searchPattern, matchType)
-  b4OrAfterLine = 'after'
+  // b4OrAfterLine = 'after'
   return matchWord(transformArray, b4OrAfterLine, regex, pageNum)
 }
 
@@ -319,21 +334,21 @@ function switchSearchFunction (searchToken:string,
     b4OrAfterLine = 'after'
     matchType = 'i'
     eachTask[searchToken] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
-    taskArray.push(eachTask)
+
   } else if (searchToken === "Appeal Reference:|Appeal number:") {
     searchPattern = "\(" + searchToken + "\)\(.*\)"
     b4OrAfterLine = 'after'
     matchType = 'i'
     eachTask[searchToken] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
 
-  } else if (searchToken === "Tribunal Members") {
-    searchPattern = "\(" + searchToken + "? \)\(\\w+ \\w+\)"
+  } else if (searchToken === "Tribunal Members") { // fix the bug here for multiple members
+    searchPattern = "\(" + searchToken + "?\)"
     b4OrAfterLine = 'after'
     matchType = 'i'
     eachTask[searchToken] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
 
   } else if (searchToken === "Appellant"){
-    searchPattern = "\(.*\)\(" + searchToken + "\) $"
+    searchPattern = "\(.*\)\(" + searchToken + "\\s{1,}$\)"
     b4OrAfterLine = 'b4'
     matchType = 'i'
     eachTask[searchToken] = generateMatchingArray(searchPattern, b4OrAfterLine, transformArray, pageNum, matchType)
@@ -343,16 +358,18 @@ function switchSearchFunction (searchToken:string,
 }
 
 function generateTaskArray(taskIDs: any[], taskList: any, transformArray:any[], pageNum:number) {
-  let taskArray = []
+  let taskDic = {}
+  console.log(taskIDs, taskList)
   Object.entries(taskIDs).forEach(([key, value]) => {
     // console.log(taskList[key], value)
     let searchToken:string = taskList[key]['searchPattern']
     // console.log(searchToken)
-    taskArray.push(switchSearchFunction(searchToken, transformArray, pageNum))
-
+    taskDic[key] = switchSearchFunction(searchToken, transformArray, pageNum)[searchToken]
+    // taskArray.push(switchSearchFunction(searchToken, transformArray, pageNum))
+    taskDic[key] = generateHighlightArray(taskDic[key])
 
   })
-  return taskArray
+  return taskDic
 }
 
 
@@ -372,25 +389,28 @@ console.log(transformArray)
 taskArray = generateTaskArray(expComp.taskIDs, taskList, transformArray, pageNum)
 
 
-
+console.log(taskArray)
 
 
 //task ID and taskName are matached
-let taskIdxToName
+// let taskIdxToName
 
-taskIdxToName = generateKeysForTask(taskArray)
+// taskIdxToName = generateKeysForTask(taskArray)
+// console.log(taskIdxToName)
 
-for (var i=0;i<taskArray.length;i++) {
-  let tempDic = {}
-  tempDic[taskIdxToName[i]] = selectTaskToShow(i, taskIdxToName[i], taskArray)
-  contentHighlight.push(tempDic)
-}
+
+// for (var i=0;i<taskArray.length;i++) {
+//   let tempDic = {}
+//   tempDic[taskIdxToName[i]] = selectTaskToShow(i, taskIdxToName[i], taskArray)
+//   contentHighlight.push(tempDic)
+// }
 // contentHighlight = selectTaskToShow(taskID, taskIdxToName[3], taskArray)
 
+// write dictionary for contenthighlight
+
+contentHighlight = taskArray['task_0001']
 
 console.log(contentHighlight)
-console.log(contentHighlight[3])
-
 
 // export generated data for all the tasks
 export let PRIMARY_URL
@@ -398,7 +418,5 @@ export let testHighlights = {}
 export let taskIDDic, totalTasks
 
 PRIMARY_URL = expComp.src
-// testHighlights[PRIMARY_URL] = contentHighlight[0][taskIdxToName[0]]
 testHighlights[PRIMARY_URL] = contentHighlight
-taskIDDic = taskIdxToName
 totalTasks = contentHighlight
