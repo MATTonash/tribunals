@@ -1,5 +1,6 @@
 import React from "react";
 import type { IHighlight } from "./react-pdf-highlighter";
+import FileSel from "./FileSel"
 
 interface Props {
   highlights: Array<IHighlight>;
@@ -9,7 +10,6 @@ interface Props {
   updateTaskNo: number;
   taskQuestion?: string;
   suggestion?: string;
-
 }
 
 const updateHash = (highlight: IHighlight) => {
@@ -30,14 +30,14 @@ export function Sidebar({
   return (
     <div className="sidebar" style={{ width: "25vw" }}>
       <div className="description" style={{ padding: "1rem" }}>
-        <h2 style={{ marginBottom: "1rem" }}>Proof Reading helper</h2>
+        <h2 style={{ marginBottom: "1rem" }}>Welcome to the Annotation System</h2>
 
         {/* <p style={{ fontSize: "0.7rem" }}>
           <a href="https://github.com/agentcooper/react-pdf-highlighter">
             Open in GitHub
           </a>
         </p> */}
-        
+
 
 
         {/* <p>
@@ -48,17 +48,16 @@ export function Sidebar({
         </p> */}
 
         <p>
-            Task {updateTaskNo}/8
-        </p>
-        
-        <p>
-        {updateTaskNo}. {taskQuestion}
+          To get started, please select the experiment file and give your name:
         </p>
 
+        <FileSel />
+
+
       </div>
-      
-      
-        {/* hightlight indicates the component information (position,text,id)
+
+
+      {/* hightlight indicates the component information (position,text,id)
         index indicates the order showed on the side bar */}
       <ul className="sidebar__highlights">
         {highlights.map((highlight, index) => (
@@ -67,7 +66,7 @@ export function Sidebar({
             className="sidebar__highlight"
             onClick={() => {
               console.log(highlight.id)
-              updateHash(highlight); 
+              updateHash(highlight);
               console.log(highlight)
               console.log(highlight.id)
               console.log(index)
@@ -98,12 +97,12 @@ export function Sidebar({
 
       <div>
         <div style={{ padding: "1rem" }}>
-        <p>
+          <p>
             We found one instance of the {suggestion}'s name, Please check this.
-        </p>
+          </p>
         </div>
       </div>
-     
+
       {/* <div style={{ padding: "1rem" }}>
 
         <button className="button button3" onClick={toggleDocument}>More suggestion</button>
@@ -113,11 +112,11 @@ export function Sidebar({
       <div style={{ padding: "1rem" }}>
 
         <button className="button button2" onClick={nextTask}>Next task</button>
-  
+
         {/* <button className="button button4" onClick={toggleDocument}>Only show red</button> */}
       </div>
-      
-      
+
+
       <div style={{ padding: "1rem" }}>
         <button onClick={toggleDocument}>Default highlight</button>
       </div>
@@ -128,7 +127,7 @@ export function Sidebar({
           <button onClick={resetHighlights}>Reset highlights</button>
         </div>
       ) : null}
-    
+
     </div>
   );
 }

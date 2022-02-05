@@ -20,17 +20,12 @@ import "./style/App.css";
 // import { testHighlights as _testHighlights } from "./test-highlights";
 
 // enable to test on dataDectcts script
-import { testHighlights as _testHighlights } from "./dataDetect";
-// import { PRIMARY_URL, taskIDDic } from "./dataDetect";
+import { testHighlights } from "./dataDetect";
 
+// import { PRIMARY_URL, taskIDDic } from "./dataDetect";
 import { PRIMARY_URL } from "./dataDetect";
 
 
-// show the highlight elements
-// let hightLightEles = []
-// hightLightEles[PRIMARY_URL] = _testHighlights[PRIMARY_URL][0][taskIDDic[0]]
-
-const contentHighlights: Record<string, Array<IHighlight>> = _testHighlights;
 
 
 
@@ -38,12 +33,12 @@ interface State {
   login: boolean;
   url: string;
   highlights: Array<IHighlight>;
-  updateTaskNo: number;
-  taskQuestion: string;
-  suggestion: string;
+  // updateTaskNo: number;
+  // taskQuestion: string;
+  // suggestion: string;
 }
 
-console.log(contentHighlights)
+
 
 
 const getNextId = () => String(Math.random()).slice(2);
@@ -69,61 +64,61 @@ const HighlightPopup = ({
 const PRIMARY_PDF_URL = PRIMARY_URL;
 
 
-const searchParams = new URLSearchParams(document.location.search);
+// const searchParams = new URLSearchParams(document.location.search);
 
-const initialUrl = searchParams.get("url") || PRIMARY_PDF_URL;
+// const initialUrl = searchParams.get("url") || PRIMARY_PDF_URL;
 
 // console.log(initialUrl)
 // change the hightlight elements
-let testHighlights = {}
+// let testHighlights: any = {}
+// let initialUrl: any = Object.keys(contentHighlights)[0]
 
-console.log(contentHighlights)
+// testHighlights[initialUrl] = [contentHighlights[initialUrl][0]]
 
-testHighlights[initialUrl] = [contentHighlights[initialUrl][0]]
-
-console.log(testHighlights)
-
+// console.log(testHighlights)
 
 
-var curTaskID = 1;
-const taskList = ["What is the Judge's name?", "What is the Appellant's name?",
-  "What is the Respondents' name?"];
-const sugList = ["Judge", "Appellant", "Respondents"];
+// var curTaskID = 1;
+// const taskList = ["What is the Judge's name?", "What is the Appellant's name?",
+//   "What is the Respondents' name?"];
+// const sugList = ["Judge", "Appellant", "Respondents"];
 
-const curTaskQuestion = taskList[0]
-const curSug = sugList[0]
+// const curTaskQuestion = taskList[0]
+// const curSug = sugList[0]
 
-function getNextTaskId(taskID: number) {
-  return taskID + 1;
-}
+// function getNextTaskId(taskID: number) {
+//   return taskID + 1;
+// }
 
-function getNextTaskQuestion(idx: number) {
-  return taskList[idx];
-}
+// function getNextTaskQuestion(idx: number) {
+//   return taskList[idx];
+// }
 
-function getNextTaskSuggestion(idx: number) {
-  testHighlights = { initialUrl: [contentHighlights[initialUrl][idx - 1]] }
-  return testHighlights;
-}
+// function getNextTaskSuggestion(idx: number) {
+//   testHighlights = { initialUrl: [contentHighlights[initialUrl][idx - 1]] }
+//   return testHighlights;
+// }
 
-function getNextSug(idx: number) {
-  return sugList[idx];
-}
+// function getNextSug(idx: number) {
+//   return sugList[idx];
+// }
 
-console.log("this is a main file")
-console.log(getNextSug(2))
+// console.log("this is a main file")
+// console.log(getNextSug(2))
 
 
 class App extends Component<{}, State> {
   state = {
     login: false,
-    url: initialUrl,
-    highlights: testHighlights[initialUrl]
-      ? [...testHighlights[initialUrl]]
-      : [],
-    updateTaskNo: curTaskID,
-    taskQuestion: curTaskQuestion,
-    suggestion: curSug,
+    url: PRIMARY_PDF_URL,
+    // highlights: testHighlights[PRIMARY_PDF_URL]
+    //   ? [...testHighlights[PRIMARY_PDF_URL]]
+    //   : [],
+    highlights: [],
+
+    // updateTaskNo: curTaskID,
+    // taskQuestion: curTaskQuestion,
+    // suggestion: curSug,
   };
 
 
@@ -157,7 +152,7 @@ class App extends Component<{}, State> {
       updateTaskNo: newTaskNo,
       taskQuestion: newTaskQue,
       suggestion: newSug,
-      highlights: newHighlight[initialUrl],
+      highlights: newHighlight[PRIMARY_PDF_URL],
 
 
     });
@@ -225,8 +220,9 @@ class App extends Component<{}, State> {
   }
 
   render() {
-    const { url, highlights, updateTaskNo, taskQuestion, suggestion } = this.state;
 
+    const { login, url, highlights, updateTaskNo, taskQuestion, suggestion } = this.state;
+    console.log(url, highlights)
     return (
       <div className="App" style={{ display: "flex", height: "100vh" }}>
         <Sidebar

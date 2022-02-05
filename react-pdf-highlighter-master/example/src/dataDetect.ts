@@ -413,10 +413,8 @@ contentHighlight = taskArray['task_0001']
 console.log(contentHighlight)
 
 // export generated data for all the tasks
-export let PRIMARY_URL
-export let testHighlights = {}
-export let taskIDDic, totalTasks
+export let PRIMARY_URL: any
+export let testHighlights: any = {}
 
 PRIMARY_URL = expComp.src
 testHighlights[PRIMARY_URL] = contentHighlight
-totalTasks = contentHighlight
