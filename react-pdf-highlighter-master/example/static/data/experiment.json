@@ -1,5 +1,6 @@
 {
     "exp_0001": {
+        "name": "",
         "pdfID": "pdf_1",
         "taskIDs": {
             "task_0001": false,
