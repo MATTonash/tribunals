@@ -13,6 +13,8 @@ import {
 import type { IHighlight, NewHighlight } from "./react-pdf-highlighter";
 import { Spinner } from "./Spinner";
 import { Sidebar } from "./Sidebar";
+import Login from "./FileSel"
+
 
 import "./style/App.css";
 
@@ -22,15 +24,12 @@ import "./style/App.css";
 // enable to test on dataDectcts script
 import { testHighlights } from "./dataDetect";
 
-// import { PRIMARY_URL, taskIDDic } from "./dataDetect";
-import { PRIMARY_URL } from "./dataDetect";
-
 
 
 
 
 interface State {
-  login: boolean;
+  login: Login;
   url: string;
   highlights: Array<IHighlight>;
   // updateTaskNo: number;
@@ -61,60 +60,27 @@ const HighlightPopup = ({
     </div>
   ) : null;
 
-const PRIMARY_PDF_URL = PRIMARY_URL;
+
+console.log(testHighlights)
 
 
-// const searchParams = new URLSearchParams(document.location.search);
-
-// const initialUrl = searchParams.get("url") || PRIMARY_PDF_URL;
-
-// console.log(initialUrl)
-// change the hightlight elements
-// let testHighlights: any = {}
-// let initialUrl: any = Object.keys(contentHighlights)[0]
-
-// testHighlights[initialUrl] = [contentHighlights[initialUrl][0]]
-
-// console.log(testHighlights)
+// state initilisation
+const loginEmpty = {} as Login;
+const urlEmpty: string = '';
+const highlightsEmpty: Array<IHighlight> = [];
 
 
-// var curTaskID = 1;
-// const taskList = ["What is the Judge's name?", "What is the Appellant's name?",
-//   "What is the Respondents' name?"];
-// const sugList = ["Judge", "Appellant", "Respondents"];
-
-// const curTaskQuestion = taskList[0]
-// const curSug = sugList[0]
-
-// function getNextTaskId(taskID: number) {
-//   return taskID + 1;
-// }
-
-// function getNextTaskQuestion(idx: number) {
-//   return taskList[idx];
-// }
-
-// function getNextTaskSuggestion(idx: number) {
-//   testHighlights = { initialUrl: [contentHighlights[initialUrl][idx - 1]] }
-//   return testHighlights;
-// }
-
-// function getNextSug(idx: number) {
-//   return sugList[idx];
-// }
-
-// console.log("this is a main file")
-// console.log(getNextSug(2))
 
 
 class App extends Component<{}, State> {
+
   state = {
-    login: false,
-    url: PRIMARY_PDF_URL,
+    login: loginEmpty,
+    url: urlEmpty,
     // highlights: testHighlights[PRIMARY_PDF_URL]
     //   ? [...testHighlights[PRIMARY_PDF_URL]]
     //   : [],
-    highlights: [],
+    highlights: highlightsEmpty,
 
     // updateTaskNo: curTaskID,
     // taskQuestion: curTaskQuestion,
@@ -122,41 +88,43 @@ class App extends Component<{}, State> {
   };
 
 
+
   resetHighlights = () => {
+    console.log("3432432")
     this.setState({
-      highlights: [],
+      highlights: highlightsEmpty,
     });
   };
 
-  toggleDocument = () => {
-    const newUrl = this.state.url = PRIMARY_PDF_URL
+  browseJson = (updateLogin: Login) => {
+    console.log("!!!!!!!!")
+    const newLogin = this.state.login = updateLogin
+
+    this.setState({
+      login: newLogin,
+      url: newLogin['pdfID'],
+    });
+    console.log(this.state.login)
+  };
+
+  toggleDocument = (updateTaskID: string) => {
+
+    const newExpID = this.state.login.expID;
+    const newHLID = updateTaskID
+
+
     // this.state.url === PRIMARY_PDF_URL ? SECONDARY_PDF_URL : PRIMARY_PDF_URL;
-
+    console.log(newExpID)
+    console.log(newHLID)
     this.setState({
-      url: newUrl,
+      // url: newUrl,
       // highlights: testHighlights[newUrl] ? [...testHighlights[newUrl]] : [],
-      highlights: testHighlights[newUrl],
+
+      // show highlight content directly
+      highlights: testHighlights[newExpID][newHLID],
     });
   };
 
-  // next task state
-  nextTask = () => {
-    const newTaskNo = this.state.updateTaskNo = getNextTaskId(this.state.updateTaskNo)
-    const newTaskQue = this.state.taskQuestion = getNextTaskQuestion(newTaskNo - 1)
-    const newSug = this.state.suggestion = getNextSug(newTaskNo - 1)
-    const newHighlight = this.state.highlights = getNextTaskSuggestion(newTaskNo)
-
-
-
-    this.setState({
-      updateTaskNo: newTaskNo,
-      taskQuestion: newTaskQue,
-      suggestion: newSug,
-      highlights: newHighlight[PRIMARY_PDF_URL],
-
-
-    });
-  };
 
 
   scrollViewerTo = (highlight: any) => { };
@@ -221,27 +189,25 @@ class App extends Component<{}, State> {
 
   render() {
 
-    const { login, url, highlights, updateTaskNo, taskQuestion, suggestion } = this.state;
-    console.log(url, highlights)
+    const { login, url, highlights } = this.state;
+    console.log(login)
+    console.log(url)
+    console.log(highlights)
     return (
       <div className="App" style={{ display: "flex", height: "100vh" }}>
         <Sidebar
+          login={login}
+          // url={url}
           highlights={highlights}
-          resetHighlights={this.resetHighlights}
           toggleDocument={this.toggleDocument}
-          nextTask={this.nextTask}
-          updateTaskNo={updateTaskNo}
-          taskQuestion={taskQuestion}
-          suggestion={suggestion}
+          browseJson={this.browseJson}
+          resetHighlights={this.resetHighlights}
+
+
+
 
         />
-        <div
-          style={{
-            height: "100vh",
-            width: "75vw",
-            position: "relative",
-          }}
-        >
+        <div style={{ height: "100vh", width: "75vw", position: "relative" }}>
           <PdfLoader url={url} beforeLoad={<Spinner />}>
             {(pdfDocument) => (
               <PdfHighlighter
