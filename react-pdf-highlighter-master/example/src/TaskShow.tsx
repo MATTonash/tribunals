@@ -82,6 +82,9 @@ export function TaskShow({
                     <p>
                         {question}
                     </p>
+                    <form><input type="text" placeholder="CHRIS"></input>
+                        <input type="text" placeholder="CHRIS"></input></form>
+
 
 
 
