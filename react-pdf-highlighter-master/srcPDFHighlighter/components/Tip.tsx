@@ -35,7 +35,8 @@ export class Tip extends Component<Props, State> {
     const { compact, text, emoji } = this.state;
 
     return (
-      <div className="Tip">
+      // delete style if we want to use the add highlighter function
+      <div className="Tip" style={{ display: 'none' }}>
         {compact ? (
           <div
             className="Tip__compact"

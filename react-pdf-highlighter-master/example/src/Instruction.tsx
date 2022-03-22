@@ -10,17 +10,20 @@ import taskList from '/static/data/taskData.json'
 interface Props {
     login: Login
     startTask: any
+    nextTask: () => void;
+    setLocRec: any;
+    records: any
 }
-
-
-
 
 
 
 
 export function Instruction({
     login,
-    startTask
+    startTask,
+    nextTask,
+    setLocRec,
+    records
 
 
 }: Props) {
@@ -86,9 +89,11 @@ export function Instruction({
                 Please press the button to start the tasks once the information has been confirmed.
             </p>
 
-            <button type="button" onClick={(e) => {
+            <button className="button" onClick={(e) => {
                 startTask(true)
-
+                nextTask()
+                records['startTimestamp'] = Date.now()
+                setLocRec(records)
             }}>Start</button>
 
 

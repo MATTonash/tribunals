@@ -34,6 +34,7 @@
     "react-dom": ">=16.4.0"
   },
   "dependencies": {
+    "@material-ui/core": "^4.12.3",
     "@types/lodash.debounce": "^4.0.6",
     "@types/pdfjs-dist": "^2.7.4",
     "@types/react": "^16.4.0",
@@ -45,6 +46,7 @@
     "lodash.debounce": "^4.0.8",
     "pdf-lib": "^1.17.0",
     "pdfjs-dist": "2.8.335",
+    "react-csv": "^2.2.2",
     "react-rnd": "^10.1.10",
     "react-router-dom": "^6.2.1",
     "state-pool": "^0.7.1",
@@ -58,6 +60,7 @@
     "url": "https://github.com/agentcooper/react-pdf-highlighter/issues"
   },
   "devDependencies": {
+    "@types/react-csv": "^1.1.2",
     "@vitejs/plugin-react-refresh": "^1.3.1",
     "jest": "^27.1.0",
     "jest-puppeteer": "^5.0.4",

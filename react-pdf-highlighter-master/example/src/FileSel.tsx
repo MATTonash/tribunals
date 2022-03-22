@@ -81,7 +81,7 @@ export function FileSel({
         <div className="description" style={{ padding: "1rem" }}>
             <h2 style={{ marginBottom: "1rem" }}>Welcome to the Annotation System</h2>
             <p>
-                To get started, please select the experiment file and give your name:
+                To get started, please select the experiment file first, and then enter your name.
             </p>
             <form>
                 <select className="expSelect"
@@ -94,46 +94,28 @@ export function FileSel({
                         setLogState({
                             ...logDetail,
                             expID: selectedExpID,
-                            name: userName,
+                            name: expList[selectedExpID]['name'],
                             pdfID: pdfList[expList[selectedExpID][pdfIdxCol]],
                             tasks: expList[selectedExpID][taskIDsCol]
                         })
 
                         login = logDetail
                         // url = logDetail.pdfID
+                        console.log(expList[selectedExpID]['name'])
+                        setNameState(expList[selectedExpID]['name'])
 
                     }}>
-                    <option key="0" value="0" disabled>Choose here</option>
+                    <option key="0" value="0" disabled>Choose a file</option>
                     {/* <option value="exp_0001">exp_0001</option>
                     <option value="exp_0002">exp_0002</option> */}
                     {opts}
                 </select>
-                {/* {expIDState}
-                {url} */}
-                {console.log(logDetail)}
-                {/* <select value={selectedOptionId}>
-                    {option_id.map(id =>
-                        <option key={id} value={id}>{options[id].expID}</option>
-
-                    )}
-                </select> */}
-                {/* <button>Browse</button> */}
-
-
-                {/* <button onClick={(e) => {
-                    e.preventDefault()
-                    login = logDetail
-                    url = pdfURL
-                    console.log(login)
-                    console.log(pdfURL)
-
-                }}>Browse</button> */}
-                {/* <button type="button" onClick={browseJson}>Browse</button> */}
+          
             </form>
 
             <form>
                 <p>
-                    <small>
+                    <small style={{ color: "red" }}>
                         {checkInputText}
                     </small>
                 </p>
@@ -146,7 +128,7 @@ export function FileSel({
                     }}></input>
                 {/* {userName} */}
 
-                <button type="button" onClick={(e) => {
+                <button className="button" onClick={(e) => {
                     if (logDetail.expID != "0" && logDetail.name != "") {
                         setLogState({
                             ...logDetail
@@ -156,9 +138,9 @@ export function FileSel({
                         setCheckInputText('')
                         remove(true)
                     } else if (logDetail.expID == "0") {
-                        setCheckInputText('Please select the file')
+                        setCheckInputText('Please select the file.')
                     } else {
-                        setCheckInputText('Please enter your name')
+                        setCheckInputText('Please enter your name.')
                     }
 
                 }}>Start</button>
