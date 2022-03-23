@@ -9,19 +9,87 @@ import { v4 as uuid } from 'uuid';
 
 
 
+// import { TaskShow } from "./TaskShow"
 
 
 // pdf library loaded
-const tranformScale: number = 0.60008553 //transformed scale
-const pdfIdx: string = 'pdfID'
-const taskIDs: string = 'taskIDs'
-const expTaskArray: any[] = []
+const workerSrc = "https://unpkg.com/pdfjs-dist@2.8.335/build/pdf.worker.min.js"
 
 let viewportWidth: number
 let viewportHeight: number
 
 
+
+
+
+// generate the content by the page number
+async function getItems(src: string, pg: number) {
+
+  if (typeof workerSrc === "string") {
+    GlobalWorkerOptions.workerSrc = workerSrc
+  }
+  const doc = await getDocument(src).promise
+  const page = await doc.getPage(pg)
+  // console.log(doc)
+
+  const scale = 1;
+  const viewport = page.getViewport({ scale });
+
+  //divide 0.6 ratio!!! to get the actual page size
+  viewportWidth = viewport.width
+  viewportHeight = viewport.height
+  // console.log(viewportWidth)
+  // console.log(viewportHeight)
+
+  return page.getTextContent()
+
+}
+
+
+
+
+// let dataPageArray=[]
+const tranformScale: number = 0.60008553 //transformed scale
+let pageNum: number
+
+
+console.log(taskList)
+console.log(pdfList)
+console.log(expList)
+
+
+// get the link for the legal document
+// first case judge
+// var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2912/Wolfe,%20David%20070921%20EA20190204.pdf"
+// var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2947/EA.2021.0126%20R.%20Miah%20s14%20Decision.pdf"
+
+// second case for judge
+// var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2940/Miller,Phil%20-%20EA-2019-0183%20(06.08.21).pdf"
+// var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2857/Centre%20for%20Criminal%20Appeals%20EA2020-0181%20(040621)-%20JH%20Decision.pdf"
+// var src = "https://informationrights.decisions.tribunals.gov.uk/DBFiles/Decision/i2817/Driver%20Ian%20(EA.2019.0254)%2008.04.21.pdf"
+
+
+
+
+
+type ExperimentComp = {
+  src: string;
+  taskIDs: any[];
+}
+
+// const expIdx: string = "exp_0001"
+const pdfIdx: string = 'pdfID'
+const taskIDs: string = 'taskIDs'
+
+
+// const taskStatus: any = {}
+const expTaskArray: any[] = []
+
+
+// {expID: exp_0001...}
 for (const [key, value] of Object.entries(expList)) {
+
+
   let url = pdfList[expList[key][pdfIdx]]
   let taskStatus: any = {}
   for (const { "taskID": key1, "completed": status } of expList[key][taskIDs]) {
@@ -32,42 +100,10 @@ for (const [key, value] of Object.entries(expList)) {
     src: url,
     taskIDs: taskStatus,
   })
+
 }
 
 console.log(expTaskArray)
-
-let dataPageArrayAll: any[] = []
-
-let contentHighlight: any[] = []
-
-dataPageArrayAll.forEach((elementArray,indexExp) => {
-  let expComp = expTaskArray[indexExp]
-  console.log(expComp)
-  let taskDicAll:any  = {}
-
-  elementArray.forEach((element: any, index: any) => {
-
-    let items = element["items"]
-    let pageNum = index + 1
-
-    let taskDic= {}
-    let transformArray = []
-
-    transformArray = reformTextHighlightArray(items)
-    console.log(transformArray)
-    taskDic = generateTaskArray(expComp.taskIDs, taskList, transformArray, pageNum)
-    taskDicAll = generateFinalTaskArray(taskDicAll, taskDic)
-
-  })
-  contentHighlight.push(taskDicAll)
-  console.log(taskDicAll)
-
-})
-
-
-console.log(contentHighlight)
-
-
 
 
 
@@ -467,9 +503,96 @@ function generateFinalTaskArray(taskDicAll: any, taskDic:any){
 
 
 
+let arrPagesPro: any[] = []
+let arrPages:any[] = []
+
+expTaskArray.forEach(element => {
+  // console.log(element)
+  if (typeof workerSrc === "string") {
+    GlobalWorkerOptions.workerSrc = workerSrc
+  }
+  let docxs = getDocument(element.src).promise
+  arrPagesPro.push(docxs)
+
+})
+console.log(arrPagesPro)
+
+await Promise.all(arrPagesPro.map(function (entity: any) {
+    return entity;})).then(function (data: any) {
+      arrPages = data
+});
+
+console.log(arrPages)
 
 
 
+var promises: any[] = []
+
+expTaskArray.forEach((element, index) => {
+  // test the getItems function to generate the content of page 1
+  // console.log(element)
+  var eachPDFpromises: any[] = []
+  let expComp: ExperimentComp = {
+    src: element.src,
+    taskIDs: element.taskIDs
+  }
+
+  console.log("grab info from pages")
+  console.log(expComp)
+  // pageNum = 1
+
+  pageNum = 1
+  let j: number = arrPages[index]["_pdfInfo"]["numPages"]
+  while (pageNum <= j) {
+    eachPDFpromises.push(getItems(expComp.src, pageNum))
+    pageNum = pageNum + 1
+  }
+  promises.push(eachPDFpromises)
+});
+
+
+
+let dataPageArrayAll: any[] = []
+await Promise.all(promises.map(function (entity: any) {
+  return Promise.all(entity.map(function (item: any) {
+    return item;
+  }));
+})).then(function (data) {
+  dataPageArrayAll = data
+});
+
+
+
+console.log(promises)
+console.log(dataPageArrayAll)
+
+let contentHighlight: any[] = []
+
+dataPageArrayAll.forEach((elementArray,indexExp) => {
+  let expComp = expTaskArray[indexExp]
+  console.log(expComp)
+  let taskDicAll:any  = {}
+
+  elementArray.forEach((element: any, index: any) => {
+
+    let items = element["items"]
+    let pageNum = index + 1
+
+    let taskDic= {}
+    let transformArray = []
+
+    transformArray = reformTextHighlightArray(items)
+    taskDic = generateTaskArray(expComp.taskIDs, taskList, transformArray, pageNum)
+    taskDicAll = generateFinalTaskArray(taskDicAll, taskDic)
+
+  })
+  contentHighlight.push(taskDicAll)
+  console.log(taskDicAll)
+
+})
+
+
+console.log(contentHighlight)
 
 let contentHighlightFinal: any[] = []
 

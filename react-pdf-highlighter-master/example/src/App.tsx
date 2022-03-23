@@ -18,11 +18,10 @@ import Login from "./FileSel"
 
 import "./style/App.css";
 
-// enable to test on the test-highlights script
-// import { testHighlights as _testHighlights } from "./test-highlights";
 
+import "./dataPreproces.tsx";
 // enable to test on dataDectcts script
-import { testHighlights, userRecords } from "./dataDetect";
+// import { testHighlights, userRecords } from "./dataDetect";
 
 
 
@@ -59,8 +58,6 @@ const HighlightPopup = ({
     </div>
   ) : null;
 
-
-// console.log(testHighlights)
 
 
 // state initilisation
