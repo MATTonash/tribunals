@@ -128,7 +128,7 @@ export function FileSel({
                     }}></input>
                 {/* {userName} */}
 
-                <button className="button" onClick={(e) => {
+                <button className="button" id='fileselector' onClick={(e) => {
                     if (logDetail.expID != "0" && logDetail.name != "") {
                         setLogState({
                             ...logDetail
@@ -138,9 +138,12 @@ export function FileSel({
                         setCheckInputText('')
                         remove(true)
                     } else if (logDetail.expID == "0") {
+                        e.preventDefault();
                         setCheckInputText('Please select the file.')
                     } else {
+                        e.preventDefault();
                         setCheckInputText('Please enter your name.')
+             
                     }
 
                 }}>Start</button>

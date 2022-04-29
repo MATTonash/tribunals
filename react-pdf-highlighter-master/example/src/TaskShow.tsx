@@ -4,8 +4,12 @@ import { Instruction } from "./Instruction"
 import Login from "./FileSel"
 import taskList from '/static/data/taskData.json'
 import TextField from "@material-ui/core/TextField";
-
-
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+// import { v4 as uuid } from 'uuid';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
 
 
 
@@ -61,8 +65,13 @@ export function TaskShow({
     let [showValid, setShowValid] = useState(false)
     let [validMSG, setValidMSG] = useState("")
 
+    let [imcompletedIDs, setImcompletedIDsIDs] = useState([])
+    let [curextraTFIdx, setcurExtraTFIdx] = useState(locRec[taskStatus[0]['taskID']].length)
+    const [showDetMSG, setShowDetMSG] = useState("")
+ 
 
-    console.log(records)
+    console.log(highlights.length)
+    console.log(curextraTFIdx)
 
     function nextTask() {
         if (taskID < maxNumTask) {
@@ -84,12 +93,13 @@ export function TaskShow({
             
             }
            
-         
             toggleDocument(taskStatus[taskID]['taskID'])
+            setcurExtraTFIdx(locRec[taskStatus[taskID]['taskID']].length)
             taskID = taskID + 1
             setTaskID(taskID)
             console.log(taskID)
             console.log(locRec)
+           
         }
     }
 
@@ -109,6 +119,8 @@ export function TaskShow({
 
             // setHint(taskList[taskStatus[taskID - 1]['taskID']]['hint'])
             toggleDocument(taskStatus[taskID - 1]['taskID'])
+            // console.log(taskID)
+            setcurExtraTFIdx(locRec[taskStatus[taskID-1]['taskID']].length)
         } else {
 
         }
@@ -136,15 +148,19 @@ export function TaskShow({
     function validataion() {
         let locrecordsArray = locRec[taskStatus[taskID - 1]['taskID']]
         console.log("ccc", showValid, taskID)
+        let tempArray:any = []
 
         locrecordsArray.forEach((element: any, index:number) => {
             console.log(element['userInput'])
             if (element['completed'] === false){
                 console.log("fdfds")       
+                tempArray.push(index)
                 showValid = true
                 setShowValid(true)
             }
         });
+        imcompletedIDs = tempArray
+        setImcompletedIDsIDs(tempArray)
         
     }
 
@@ -167,6 +183,14 @@ export function TaskShow({
         console.log(locRec[taskStatus[taskID - 1]['taskID']][0]['userInput'])
         const fileNameArray = login.pdfID.split('/')
         let fileName = fileNameArray[fileNameArray.length - 1]
+        let highlighLen: number
+        if (highlights.length) {
+            highlighLen = highlights.length
+        } else {
+            highlighLen = 0
+        }
+
+        let filterETF = locRec[taskStatus[taskID - 1]['taskID']].slice(highlighLen)
 
         return (
 
@@ -192,6 +216,52 @@ export function TaskShow({
 
 
                 </div>
+                {<div id='addicon'>
+
+                <Tooltip title="Add additional input box">
+                            <IconButton   sx={{
+          bgcolor: 'lightgray',
+        }} color="primary" onClick={(e) => { 
+                            console.log(taskList[taskStatus[taskID - 1]['taskID']]['search_function']['name'])
+                          
+
+                            console.log(locRec[taskStatus[taskID - 1]['taskID']])
+                            locRec[taskStatus[taskID - 1]['taskID']].push({
+                                completed: false,
+                                hint: "N/A/Extra addIcon",
+                                timestamp: Date.now(),
+                                typingtimestamp: 0,
+                                userInput: ""
+                             
+                            })
+
+                            curextraTFIdx = locRec[taskStatus[taskID - 1]['taskID']].length
+                            setcurExtraTFIdx(locRec[taskStatus[taskID - 1]['taskID']].length)
+                        }}>
+                                <AddIcon  />
+                            </IconButton>
+                        </Tooltip>
+                    {/* <Fab size="small" color="primary" aria-label="add">
+                        <AddIcon    onClick={(e) => { 
+                            console.log(taskList[taskStatus[taskID - 1]['taskID']]['search_function']['name'])
+                          
+
+                            console.log(locRec[taskStatus[taskID - 1]['taskID']])
+                            locRec[taskStatus[taskID - 1]['taskID']].push({
+                                completed: false,
+                                hint: "N/A/Extra addIcon",
+                                timestamp: Date.now(),
+                                typingtimestamp: 0,
+                                userInput: ""
+                             
+                            })
+
+                            curextraTFIdx = locRec[taskStatus[taskID - 1]['taskID']].length
+                            setcurExtraTFIdx(locRec[taskStatus[taskID - 1]['taskID']].length)
+                        }}/>
+                    </Fab> */}
+
+                </div>}
 
 
                 {/* hightlight indicates the component information (position,text,id)
@@ -207,6 +277,7 @@ export function TaskShow({
                         >
 
                             <div onClick={() => {
+                                console.log(JSON.stringify(highlight.comment.text))
                                 console.log(highlight.id)
                                 updateHash(highlight);
                                 console.log(highlight)
@@ -250,6 +321,7 @@ export function TaskShow({
                                             locRec[taskStatus[taskID - 1]['taskID']][index]['completed'] = true
                                             locRec[taskStatus[taskID - 1]['taskID']][index]['typingtimestamp'] = Date.now()
                                             setShowValid(false)
+                                        
                                         } else {
                                             locRec[taskStatus[taskID - 1]['taskID']][index]['completed'] = false
                                             
@@ -275,44 +347,84 @@ export function TaskShow({
 
                         </li>
                     ))}
+                   
                 </ul>
 
 
 
-                {highlights.length == 0 ? (
-                    <div className="sidebar__highlight">
+                {highlights.length != curextraTFIdx ? (
+                    <ul className="sidebar__highlights">
+                    {console.log(curextraTFIdx)}
 
-                        <TextField autoComplete="off" fullWidth value={records[taskStatus[taskID - 1]['taskID']][0]['userInput']}
-                                    id="outlined-basic" color="secondary" label="Enter your answer" variant="outlined"
-                                   
-                                    onChange={(e) => {
-                                        // setAnswer(e.target.value)
-                                       
-                                        locRec[taskStatus[taskID - 1]['taskID']][0]['userInput'] = e.target.value
-                                        locRec[taskStatus[taskID - 1]['taskID']][0]['timestamp'] = Date.now()
-                                        if (e.target.value.length != 0 && e.target.value.trim().length != 0) {
-                                            locRec[taskStatus[taskID - 1]['taskID']][0]['completed'] = true  
-                                            locRec[taskStatus[taskID - 1]['taskID']][0]['typingtimestamp'] = Date.now()   
-                                            setShowValid(false)
-                           
-                                        } else {
-                                            locRec[taskStatus[taskID - 1]['taskID']][0]['completed'] = false
-                                            console.log(locRec)
-                                        }
+                    {filterETF.map((element: any, index:any) => (
 
-                                        setLocRec(locRec)
-                                        updateRecords(locRec)
+                        <li
+                            key={highlighLen + index}
+                            className="sidebar__highlight"
 
-                                    }}/>
+                        >
+                        <div>
+                            <strong style={{ marginTop: "0.5rem" }}>{taskList[taskStatus[taskID - 1]['taskID']]['search_function']['name'] + ' ' + (highlighLen + index + 1)}</strong>
+                        </div>
+                        <div className="highlight__location">
+                        <Tooltip title="Delete this additional input box">
+                            <IconButton onClick={(e) => { 
+                     
+                            console.log(locRec[taskStatus[taskID - 1]['taskID']])
+                            let tempID:number
+                            tempID = highlighLen + index
+                            locRec[taskStatus[taskID - 1]['taskID']].splice(tempID, 1)
+                            console.log(tempID)
+                            console.log(locRec[taskStatus[taskID - 1]['taskID']])
 
-                    </div>
+                            curextraTFIdx = locRec[taskStatus[taskID - 1]['taskID']].length
+                            setcurExtraTFIdx(locRec[taskStatus[taskID - 1]['taskID']].length)
+                        }}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                            
+                        </div>
+                        <div>
+                            <TextField autoComplete="off" fullWidth key={highlighLen + index}
+                                value={records[taskStatus[taskID - 1]['taskID']][highlighLen + index]['userInput']}
+                                id="outlined-basic" color="secondary" label="Enter your answer" variant="outlined" 
+                                onChange={(e) => {
+                                    // e.preventDefault()
+                                    // setAnswer(e.target.value)
+                                    console.log("typingg!!!!")
+                                    locRec[taskStatus[taskID - 1]['taskID']][highlighLen + index]['userInput'] = e.target.value
+                                    console.log(locRec[taskStatus[taskID - 1]['taskID']][highlighLen + index]['userInput'])
+                                    console.log(e.target.value)
+                                    if (e.target.value.length != 0 && e.target.value.trim().length != 0) {
+                                        locRec[taskStatus[taskID - 1]['taskID']][highlighLen + index]['completed'] = true
+                                        locRec[taskStatus[taskID - 1]['taskID']][highlighLen + index]['typingtimestamp'] = Date.now()
+                                        setShowValid(false)
+                                    
+                                    } else {
+                                        locRec[taskStatus[taskID - 1]['taskID']][highlighLen + index]['completed'] = false
+                                        
+
+                                    }
+
+                                    setLocRec(locRec)
+                                    updateRecords(locRec)
+
+                                }} />
+                        </div>
+
+                    </li>
+                    ))}
+
+                    </ul>
                     
                 ) : null}
 
+                
               
-                    <p style={{padding: "1rem" , color: "red" }}>
-                        {validMSG}
-                    </p>
+                <p style={{padding: "1rem" , color: "red" }}>
+                    {validMSG}
+                </p>
                    
             
 
@@ -327,15 +439,35 @@ export function TaskShow({
                     <a href="#" className="previous round" id="prev"
                         onClick={(e) => {
                             validataion()
-                            if (showValid){
-                                console.log("look at here!!!")
-                                setValidMSG("The answer can not be blank!")
+                            console.log(imcompletedIDs)
+
+                            if (imcompletedIDs.length != 0) {
+                                setValidMSG("Warning: The answer(s) is/are blank! Modify the answer, or leave it as the blank by clicking the Prev or the Next buttons again.")
+                                imcompletedIDs.forEach((element: any) => {
+                                    locRec[taskStatus[taskID - 1]['taskID']][element]['completed'] = true
+                                  
+                                });
+                                imcompletedIDs = []
+                                setImcompletedIDsIDs([])
                             } else {
                                 prevTask()
                                 setSWM("")
                                 setShowValid(false)
                                 setValidMSG("")
+                             
                             }
+
+                            // if (showValid){
+                            //     setValidMSG("The answer can not be blank!")
+                            //     showValid = false
+                            //     console.log(locRec[taskStatus[taskID - 1]['taskID']])
+
+                            // } else {
+                            //     prevTask()
+                            //     setSWM("")
+                            //     setShowValid(false)
+                            //     setValidMSG("")
+                            // }
 
                             
                         }} style={{ margin: "10px" }}>&laquo; Prev</a>
@@ -344,15 +476,35 @@ export function TaskShow({
                         
                         // add condition here for the validataion function
                         validataion()
-                        if (showValid){
-                            console.log("look at here!!!")
-                            setValidMSG("The answer can not be blank!")
+
+                        if (imcompletedIDs.length != 0) {
+                            setValidMSG("Warning: The answer(s) is/are blank! Modify the answer, or leave it as the blank by clicking the Prev or the Next buttons again.")
+                            imcompletedIDs.forEach((element: any) => {
+                                locRec[taskStatus[taskID - 1]['taskID']][element]['completed'] = true
+                              
+                            });
+                            imcompletedIDs = []
+                            setImcompletedIDsIDs([])
                         } else {
                             nextTask()
                             updateRecords(locRec)
                             setShowValid(false)
                             setValidMSG("")
+                         
                         }
+
+                        // if (showValid){
+                        //     setValidMSG("Do you want to leave a blank for the answer?")
+                        //     showValid = false
+                          
+                        //     setShowValid(false)
+                        //     console.log(locRec[taskStatus[taskID - 1]['taskID']])
+                        // } else {
+                        //     nextTask()
+                        //     updateRecords(locRec)
+                        //     setShowValid(false)
+                        //     setValidMSG("")
+                        // }
                     
                     }} style={{ margin: "20px" }}>Next &raquo;</a>) :
                         (<div>

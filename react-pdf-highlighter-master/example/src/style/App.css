@@ -160,3 +160,18 @@ img.displayed {
 
 
 }
+
+
+#addicon {
+  position: relative;
+  left: 87%;
+  top: 7px;
+}
+
+.deletebutton{
+
+}
+
+.deletebutton:hover {
+    background: black;
+}

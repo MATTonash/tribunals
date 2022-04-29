@@ -18,10 +18,12 @@ import Login from "./FileSel"
 
 import "./style/App.css";
 
-
-import "./dataPreproces.tsx";
+// enable the line to generate the json data read by pdf highlighter,
+// and move the json file into /example/static/data folder. 
+// Once the json files have been moved, disenable it
+// import "./dataPreproces.tsx";
 // enable to test on dataDectcts script
-// import { testHighlights, userRecords } from "./dataDetect";
+import { testHighlights, userRecords } from "./dataDetect";
 
 
 
@@ -227,6 +229,7 @@ class App extends Component<{}, State> {
   render() {
 
     const { login, url, highlights, records, end } = this.state;
+    console.log(login, url, highlights, records, end)
 
     if (end) {
       console.log(end)
