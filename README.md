@@ -24,7 +24,7 @@ npm start
 
 `npm install `
 
-### Prior art
+### References
 
 [`react-pdf`](https://github.com/wojtekmaj/react-pdf) and
 [`react-pdfjs`](https://github.com/erikras/react-pdfjs) only provide React
@@ -32,10 +32,6 @@ wrappers for PDF.js and do not have built-in annotation functionality.
 
 [`pdfjs-annotate`](https://github.com/instructure/pdf-annotate.js/) does not
 provide text highlights out of the box.
-
-PDF.js provides only viewer:
-
-> [PDF.js is mainly written for reading PDF files, not editing them. Because of that we don't yet support adding any kind of annotations. We do however support rendering a number of annotation types for viewing.](https://github.com/mozilla/pdf.js/wiki/Frequently-Asked-Questions#is-it-possible-to-add-annotations-to-a-pdf)
 
 See also:
 
