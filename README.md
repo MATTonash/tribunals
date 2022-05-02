@@ -12,6 +12,8 @@ server.
 
 For online example check https://agentcooper.github.io/react-pdf-highlighter/.
 
+### Start application
+
 To run the example app locally:
 
 ```
@@ -26,22 +28,13 @@ npm start
 
 ### References
 
-[`react-pdf`](https://github.com/wojtekmaj/react-pdf) and
-[`react-pdfjs`](https://github.com/erikras/react-pdfjs) only provide React
-wrappers for PDF.js and do not have built-in annotation functionality.
-
-[`pdfjs-annotate`](https://github.com/instructure/pdf-annotate.js/) does not
-provide text highlights out of the box.
-
-See also:
-
+- https://blogs.dropbox.com/tech/2016/11/annotations-on-document-previews/
 - https://github.com/mozilla/pdf.js
-- https://github.com/wojtekmaj/react-pdf
 - https://github.com/erikras/react-pdfjs
 - https://github.com/instructure/pdf-annotate.js/
-- https://blogs.dropbox.com/tech/2016/11/annotations-on-document-previews/
+- https://github.com/wojtekmaj/react-pdf
+
 
 ### Compatibility
 
-Works in Google Chrome, Safari 10+, Firefox 52+. Not tested in Internet
-Explorer.
+Works in Google Chrome.
