@@ -19,15 +19,10 @@ npm install
 npm start
 ```
 
-Create React App example is available in [`./create-react-app-example`](https://github.com/agentcooper/react-pdf-highlighter/tree/master/create-react-app-example). Make sure to run `npm install` there as well.
 
 ### Installation
 
-`npm install react-pdf-highlighter`
-
-See
-[`./example/src/App.tsx`](https://github.com/agentcooper/react-pdf-highlighter/blob/master/example/src/App.tsx)
-for React component API example.
+`npm install `
 
 ### Prior art
 
@@ -49,20 +44,6 @@ See also:
 - https://github.com/erikras/react-pdfjs
 - https://github.com/instructure/pdf-annotate.js/
 - https://blogs.dropbox.com/tech/2016/11/annotations-on-document-previews/
-
-### FAQ
-
-##### Can I get a new PDF with the highlights embedded into the document?
-
-Take a look at https://pdf-lib.js.org.
-
-##### Wasn't this named react-pdf-annotator at some point?
-
-Yes, but people from https://www.pdfannotator.com/ asked me to rename, since [they have a trademark for PDF Annotator](https://www.pdfannotator.com/en/help/infodisclaimer).
-
-##### I'm trying the demo with my PDF and it is not loading!
-
-Please check the [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) on your url. It is required for the cross-domain request.
 
 ### Compatibility
 
