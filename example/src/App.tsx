@@ -18,11 +18,12 @@ import Login from "./FileSel"
 
 import "./style/App.css";
 
-// enable the line to generate the json data read by pdf highlighter,
+// enable <import "./dataPreproces.tsx"> to generate the json data read by pdf highlighter,
 // and move the json file into /example/static/data folder. 
 // Once the json files have been moved, disenable it
 // import "./dataPreproces.tsx";
-// enable to test on dataDectcts script
+
+// enable <import { testHighlights, userRecords } from "./dataDetect";> to test on dataDectcts script
 import { testHighlights, userRecords } from "./dataDetect";
 
 
