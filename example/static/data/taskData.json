@@ -62,5 +62,21 @@
             "matchType": "m"
         },
         "validation_function": "warning"
+    },
+    "task_0005": {
+        "question": "What is/are the section(s)?",
+        "hintMSG": "The hints are recommended as the answer in the input box below. You can amend the answer if they are inappropriate. You can also click the headers to browse the hints highlighted in the PDF file.",
+        "response_type": "free text",
+        "search_function": {
+            "name": "Section", 
+            "regex":"(.*)?(section )([0-9]+ ?\\(?[0-9]+?\\)?)?",
+            "location": {
+                "foundPosition": [3], 
+                "searchNextLine":0,
+                "searchPrevLine":0
+            },
+            "matchType": "i"
+        },
+        "validation_function": "warning"
     }
 }

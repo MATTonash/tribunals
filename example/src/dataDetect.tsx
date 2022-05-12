@@ -169,6 +169,9 @@ function switchSearchFunction(searchName: string,
   } else if (searchName === "APPELLANT") {
     eachTask[searchName] = generateMatchingArray(searchPattern, searchLocation, sentenceArray, pageNum, matchType)
 
+  } else {
+    console.log(sentenceArray)
+    eachTask[searchName] = generateMatchingArray(searchPattern, searchLocation, sentenceArray, pageNum, matchType)
   }
   // console.log(eachTask)
   return eachTask
@@ -227,6 +230,7 @@ function generateTaskArray(taskIDs: any[], taskList: any, sentenceArray: any[], 
     let matchType: string = taskList[key]['search_function']['matchType']
     // console.log(searchName, searchPattern)
     taskDic[key] = switchSearchFunction(searchName, sentenceArray, pageNum, searchPattern, searchLocation, matchType)[searchName]
+    // console.log(taskDic)
     tempArray.push({[key]: generateHighlightArray(taskDic[key])})
   })
 
@@ -280,6 +284,7 @@ transformArrayAll.forEach((elementArray: any, indexExp: any) => {
     let pageNum = index + 1
     let taskDic= {}
     taskDic = generateTaskArray(expComp.taskIDs, taskList, element, pageNum)
+    // console.log(taskDic)
     taskDicAll = generateFinalTaskArray(taskDicAll, taskDic)
   })
   contentHighlight.push(taskDicAll)
