@@ -39,105 +39,118 @@ function matchPatterns(sentenceArray: any[], searchLocation: any, regex: RegExp,
   const foundPosition = searchLocation['foundPosition']
   const searchNextLine = searchLocation['searchNextLine']
   const searchPrevLine = searchLocation['searchPrevLine']
-  // console.log(foundPosition)
+  console.log(foundPosition)
 
-  for (var i = 0; i < sentenceArray.length; i++) {
-    const curSent = sentenceArray[i]['str']
-    const match = curSent.match(regex)
-
-    if (match) {
-      // console.log(i, match)
-      let matchedWords:string
-      let searchLine: any
-
-      foundPosition.forEach((eachLoc:any) => {
-        if (match[eachLoc]) {
-          let startposition = curSent.split(match[eachLoc].trim())[0].length 
-          matchedWords = match[eachLoc]
-          searchLine = sentenceArray[i]
-          foundHLArray.push(generateHighlightComp(matchedWords, searchLine, pageNum, startposition, match[2].trim()))
-        }
-      });
-
-      if (curSent.trim().length == match[2].trim().length || 
-        (curSent.trim().split(' ').length - match[2].trim().split(' ').length <= 1)){
-
-        if (searchNextLine != 0) {
-          for (var j = 1; j<=searchNextLine; j++){
-            const nextSent = sentenceArray[i+j]['str']
-            const nextSentLen = nextSent.trim().split(' ').length
-            // console.log(nextSent)
-            // console.log(i, i+j, nextSentLen, nextSent.split(' '))
-            // console.log(curSent, match[2].trim())
-
-            // not include matched words for the searching next line
-            if (!nextSent.includes(match[2].trim())){
-              if (nextSentLen <= 8 && nextSentLen > 1) {
-                if (nextSent.includes("&")){
-                  const matchedWordsFW = nextSent.split("&")[0].trim()
-                  const matchedWordsLW = nextSent.split("&")[1].trim()
-                  let startpositionFW = 0
-                  searchLine = sentenceArray[i+j]
-                  foundHLArray.push(generateHighlightComp(matchedWordsFW, searchLine, pageNum, startpositionFW, match[2].trim()))
-              
-                  let startpositionLW = nextSent.split(matchedWordsLW)[0].length 
-                  searchLine = sentenceArray[i+j]
-                  foundHLArray.push(generateHighlightComp(matchedWordsLW, searchLine, pageNum, startpositionLW, match[2].trim()))
-
-                } else if (nextSentLen <= 4 ) {
-                  
-                  let startposition = 0
-                  searchLine = sentenceArray[i+j]
-                  foundHLArray.push(generateHighlightComp(nextSent, searchLine, pageNum, startposition, match[2].trim()))
-                }
-              }
-            }
-          }
-        }
-
-        if (searchPrevLine != 0) {
-          for (var k = 1; k<=searchPrevLine; k++){
-            const prevSent = sentenceArray[i-k]['str']
-            const prevSentLen = prevSent.trim().split(' ').length
-            console.log(prevSent)
-            console.log(i, i-k, prevSentLen, prevSent.split(' '))
-            console.log(curSent, match[2].trim())
-
-
-            if (!prevSent.includes(match[2].trim())){
-            
-              if (prevSentLen <= 8 && prevSentLen > 1) {
-           
-                if (prevSent.includes("&")){
-                  const matchedWordsFW = prevSent.split("&")[0].trim()
-                  const matchedWordsLW = prevSent.split("&")[1].trim()
-                  let startpositionFW = 0
-                  searchLine = sentenceArray[i-k]
-                  foundHLArray.push(generateHighlightComp(matchedWordsFW, searchLine, pageNum, startpositionFW, match[2].trim()))
-              
-                  let startpositionLW = prevSent.split(matchedWordsLW)[0].length 
-                  searchLine = sentenceArray[i-k]
-                  foundHLArray.push(generateHighlightComp(matchedWordsLW, searchLine, pageNum, startpositionLW, match[2].trim()))
-
-                } else if (prevSentLen <= 4 ) {
-                  console.log("herereerere")
-                  let startposition = 0
-                  searchLine = sentenceArray[i-k]
-                  foundHLArray.push(generateHighlightComp(prevSent, searchLine, pageNum, startposition, match[2].trim()))
-                }
-              }
-            }
-
-
-          }
-        }
-
-      }
-
-
+  if (foundPosition.length == 0){
+    console.log("found position is empty")
+    for (var i = 0; i < sentenceArray.length; i++) {
+      const curSent = sentenceArray[i]['str']
+      const match = curSent.match(regex)
+      console.log(match)
     }
-      
+
+
+  } else {
+
+    for (var i = 0; i < sentenceArray.length; i++) {
+      const curSent = sentenceArray[i]['str']
+      const match = curSent.match(regex)
+  
+      // console.log(match)
+  
+      if (match) {
+        // console.log(i, match)
+        let matchedWords:string
+        let searchLine: any
+  
+        foundPosition.forEach((eachLoc:any) => {
+          if (match[eachLoc]) {
+            let startposition = curSent.split(match[eachLoc].trim())[0].length 
+            matchedWords = match[eachLoc]
+            searchLine = sentenceArray[i]
+            foundHLArray.push(generateHighlightComp(matchedWords, searchLine, pageNum, startposition, match[2].trim()))
+          }
+        });
+  
+        if (curSent.trim().length == match[2].trim().length || 
+          (curSent.trim().split(' ').length - match[2].trim().split(' ').length <= 1)){
+  
+          if (searchNextLine != 0) {
+            for (var j = 1; j<=searchNextLine; j++){
+              const nextSent = sentenceArray[i+j]['str']
+              const nextSentLen = nextSent.trim().split(' ').length
+              // console.log(nextSent)
+              // console.log(i, i+j, nextSentLen, nextSent.split(' '))
+              // console.log(curSent, match[2].trim())
+  
+              // not include matched words for the searching next line
+              if (!nextSent.includes(match[2].trim())){
+                if (nextSentLen <= 8 && nextSentLen > 1) {
+                  if (nextSent.includes("&")){
+                    const matchedWordsFW = nextSent.split("&")[0].trim()
+                    const matchedWordsLW = nextSent.split("&")[1].trim()
+                    let startpositionFW = 0
+                    searchLine = sentenceArray[i+j]
+                    foundHLArray.push(generateHighlightComp(matchedWordsFW, searchLine, pageNum, startpositionFW, match[2].trim()))
+                
+                    let startpositionLW = nextSent.split(matchedWordsLW)[0].length 
+                    searchLine = sentenceArray[i+j]
+                    foundHLArray.push(generateHighlightComp(matchedWordsLW, searchLine, pageNum, startpositionLW, match[2].trim()))
+  
+                  } else if (nextSentLen <= 4 ) {
+                    
+                    let startposition = 0
+                    searchLine = sentenceArray[i+j]
+                    foundHLArray.push(generateHighlightComp(nextSent, searchLine, pageNum, startposition, match[2].trim()))
+                  }
+                }
+              }
+            }
+          }
+  
+          if (searchPrevLine != 0) {
+            for (var k = 1; k<=searchPrevLine; k++){
+              const prevSent = sentenceArray[i-k]['str']
+              const prevSentLen = prevSent.trim().split(' ').length
+              console.log(prevSent)
+              console.log(i, i-k, prevSentLen, prevSent.split(' '))
+              console.log(curSent, match[2].trim())
+  
+  
+              if (!prevSent.includes(match[2].trim())){
+              
+                if (prevSentLen <= 8 && prevSentLen > 1) {
+             
+                  if (prevSent.includes("&")){
+                    const matchedWordsFW = prevSent.split("&")[0].trim()
+                    const matchedWordsLW = prevSent.split("&")[1].trim()
+                    let startpositionFW = 0
+                    searchLine = sentenceArray[i-k]
+                    foundHLArray.push(generateHighlightComp(matchedWordsFW, searchLine, pageNum, startpositionFW, match[2].trim()))
+                
+                    let startpositionLW = prevSent.split(matchedWordsLW)[0].length 
+                    searchLine = sentenceArray[i-k]
+                    foundHLArray.push(generateHighlightComp(matchedWordsLW, searchLine, pageNum, startpositionLW, match[2].trim()))
+  
+                  } else if (prevSentLen <= 4 ) {
+                    console.log("herereerere")
+                    let startposition = 0
+                    searchLine = sentenceArray[i-k]
+                    foundHLArray.push(generateHighlightComp(prevSent, searchLine, pageNum, startposition, match[2].trim()))
+                  }
+                }
+              }
+  
+  
+            }
+          }
+  
+        }
+      }
+  
+    }
   }
+
   // console.log(foundHLArray)
   return foundHLArray
 }
@@ -169,7 +182,7 @@ function switchSearchFunction(searchName: string,
   } else if (searchName === "APPELLANT") {
     eachTask[searchName] = generateMatchingArray(searchPattern, searchLocation, sentenceArray, pageNum, matchType)
 
-  } else {
+  } else if (searchName === "Section") {
     console.log(sentenceArray)
     eachTask[searchName] = generateMatchingArray(searchPattern, searchLocation, sentenceArray, pageNum, matchType)
   }

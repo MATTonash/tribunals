@@ -69,13 +69,13 @@
         "response_type": "free text",
         "search_function": {
             "name": "Section", 
-            "regex":"(sections?( +[()-A-Za-z0-9]+){1,2})|( +s[(0-9][0-9A-za-z()]+)",
+            "regex":"(.*)?(section )([0-9]+ ?\\(?[0-9]+?\\)?)?",
             "location": {
-                "foundPosition": [], 
+                "foundPosition": [3], 
                 "searchNextLine":0,
                 "searchPrevLine":0
             },
-            "matchType": "gi"
+            "matchType": "i"
         },
         "validation_function": "warning"
     }
