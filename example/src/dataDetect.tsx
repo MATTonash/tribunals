@@ -32,7 +32,7 @@ function generateHighlightComp(matchWords:any, searchLine:any, pageNum:number, p
 // search for the content and highlight information by using regex
 // logic: foundposition [1, 2, 3] indicates before the found token, the found token, and after the found token
 // if 2 found and 1 and 3 not found, activate searchNextLine or search PrevLine, 
-// 
+// [] to search for section or specific word
 function matchPatterns(sentenceArray: any[], searchLocation: any, regex: RegExp, pageNum: number) {
 
   let foundHLArray:any = []
@@ -42,13 +42,28 @@ function matchPatterns(sentenceArray: any[], searchLocation: any, regex: RegExp,
   console.log(foundPosition)
 
   if (foundPosition.length == 0){
-    console.log("found position is empty")
+    // console.log("found position is empty")
     for (var i = 0; i < sentenceArray.length; i++) {
       const curSent = sentenceArray[i]['str']
       const match = curSent.match(regex)
-      console.log(match)
-    }
+     
 
+      if(match){
+        console.log(match)
+        let searchLine: any
+  
+        match.forEach((eachWord:any) => {
+          
+          let startposition = curSent.split(eachWord.trim())[0].length
+          searchLine = sentenceArray[i]
+          foundHLArray.push(generateHighlightComp(eachWord, searchLine, pageNum, startposition, eachWord))
+          
+        });
+      }
+
+    }
+    
+  
 
   } else {
 
@@ -185,6 +200,7 @@ function switchSearchFunction(searchName: string,
   } else if (searchName === "Section") {
     console.log(sentenceArray)
     eachTask[searchName] = generateMatchingArray(searchPattern, searchLocation, sentenceArray, pageNum, matchType)
+
   }
   // console.log(eachTask)
   return eachTask
@@ -320,10 +336,50 @@ contentHighlight.forEach((element:any)=>{
   contentHighlightFinal.push(taskDicAllFinal)
 })
 
+console.log(contentHighlightFinal)
+
+
+
 
 // generate the user records and highlighted terms for the app
 export const testHighlights: any = {}
 export let userRecords: any = {}
+// export let secRecords: any = {}
+let secIdx: any = {}
+
+contentHighlightFinal.forEach((element:any, index:any) => {
+  let searchPattern = /[0-9]{1,4}|\([0-9A-z]+\)/
+  let searchreg = new RegExp(searchPattern, "gi")
+
+  let indexSet= new Set()
+  Object.entries(element).forEach(([key, value]: [string, any]) => {
+    // console.log(taskList[key])
+    let match:any
+    if (taskList[key]['search_function']['name'] == 'Section') {
+      
+      value.forEach((ele: any, index: any) => {
+        match = ele["content"]["text"].match(searchreg)
+        if (match){
+          match.forEach((found: any) => {
+            if (!indexSet.has(found)){
+              indexSet.add(found)
+              secIdx[found] = []
+            } 
+
+            if(indexSet.has(found)){
+              secIdx[found].push(ele)
+            }
+          })
+        }
+      })
+
+    }
+  })
+})
+
+
+console.log(secIdx)
+
 
 contentHighlightFinal.forEach((element:any, index:any) => {
 
@@ -334,21 +390,72 @@ contentHighlightFinal.forEach((element:any, index:any) => {
 
   Object.entries(element).forEach(([key, value]: [string, any]) => {
     let temArray: any = []
-
+    let secArray: any = []
+    // not found any task
     if (value.length === 0){
       temArray.push({ userInput: "", timestamp: 0, typingtimestamp:0 , completed: false , hint: ""})
-    } else {
-      value.forEach((ele2: any, index2: any) => {
-        // console.log(ele2)
-        temArray.push({ userInput: ele2["content"]["text"], timestamp: 0, typingtimestamp:0, completed: false, hint: ele2["content"]["text"] })
-        testHighlights[expTaskArray[index]['expID']][key][index2]['content']['text'] = ""
-
-      })
+    } else { // found at least one hint
+  
+      if (taskList[key]['search_function']['name'] == 'Section') {
+        Object.entries(secIdx).forEach(([key1, value1]: [string, any]) => {
+          let i = 1
+          console.log(key1)
+          value1.forEach((ele3: any, index3: any) => {
+            // let tempEle = Object.assign({}, ele3)
+            let newText = "Section " + String(key1) +'     ...' + String(i)
+            temArray.push({ userInput: ele3["content"]["text"], timestamp: 0, typingtimestamp:0, completed: false, hint: ele3["content"]["text"] })
+            secArray.push({
+              content: {
+                text: ele3["content"]["text"],
+              },
+              position: {
+                boundingRect: {
+                  x1: ele3['position']['boundingRect']["x1"],
+                  x2: ele3['position']['boundingRect']["x2"],
+                  y1: ele3['position']['boundingRect']["y1"],
+                  y2: ele3['position']['boundingRect']["y2"],
+                  height: ele3['position']['boundingRect']["height"],
+                  width: ele3['position']['boundingRect']["width"],
+                },
+                rects: [
+                  {
+                    x1: ele3['position']['rects'][0]["x1"],
+                    x2: ele3['position']['rects'][0]["x2"],
+                    y1: ele3['position']['rects'][0]["y1"],
+                    y2: ele3['position']['rects'][0]["y2"],
+                    height: ele3['position']['rects'][0]["height"],
+                    width: ele3['position']['rects'][0]["width"],
+                  }
+                ],
+                pageNumber: ele3['position']["pageNumber"],
+              },
+              comment: {
+                emoji: ele3["comment"]["emoji"],
+                text: newText,
+              },
+              id: ele3["id"],
+            })
+            i = i + 1
+           
+          })
+        
+        })  
+        testHighlights[expTaskArray[index]['expID']][key] = secArray
+      } else {
+        value.forEach((ele2: any, index2: any) => {
+          // console.log(ele2)
+          temArray.push({ userInput: ele2["content"]["text"], timestamp: 0, typingtimestamp:0, completed: false, hint: ele2["content"]["text"] })
+          testHighlights[expTaskArray[index]['expID']][key][index2]['content']['text'] = ""
+  
+        })
+      }
+      
     }
     tempDic[key] = temArray
     tempDic2[key] = ""
     
   })
+
   tempDic["startTimestamp"] = 0
   tempDic["endTimestamp"] = 0
   tempDic["userName"] = expList[expTaskArray[index]['expID']]["name"]

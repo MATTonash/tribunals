@@ -219,53 +219,31 @@ export function TaskShow({
                 {<div id='addicon'>
 
                 <Tooltip title="Add additional input box">
-                            <IconButton   sx={{
-          bgcolor: 'lightgray',
-        }} color="primary" onClick={(e) => { 
-                            console.log(taskList[taskStatus[taskID - 1]['taskID']]['search_function']['name'])
-                          
+                    <IconButton   sx={{bgcolor: 'lightgray'}} color="primary" onClick={(e) => { 
+                        console.log(taskList[taskStatus[taskID - 1]['taskID']]['search_function']['name'])
+                        console.log(locRec[taskStatus[taskID - 1]['taskID']])
+                        locRec[taskStatus[taskID - 1]['taskID']].push({
+                            completed: false,
+                            hint: "N/A/Extra addIcon",
+                            timestamp: Date.now(),
+                            typingtimestamp: 0,
+                            userInput: ""
+                        
+                        })
 
-                            console.log(locRec[taskStatus[taskID - 1]['taskID']])
-                            locRec[taskStatus[taskID - 1]['taskID']].push({
-                                completed: false,
-                                hint: "N/A/Extra addIcon",
-                                timestamp: Date.now(),
-                                typingtimestamp: 0,
-                                userInput: ""
-                             
-                            })
-
-                            curextraTFIdx = locRec[taskStatus[taskID - 1]['taskID']].length
-                            setcurExtraTFIdx(locRec[taskStatus[taskID - 1]['taskID']].length)
-                        }}>
-                                <AddIcon  />
-                            </IconButton>
-                        </Tooltip>
-                    {/* <Fab size="small" color="primary" aria-label="add">
-                        <AddIcon    onClick={(e) => { 
-                            console.log(taskList[taskStatus[taskID - 1]['taskID']]['search_function']['name'])
-                          
-
-                            console.log(locRec[taskStatus[taskID - 1]['taskID']])
-                            locRec[taskStatus[taskID - 1]['taskID']].push({
-                                completed: false,
-                                hint: "N/A/Extra addIcon",
-                                timestamp: Date.now(),
-                                typingtimestamp: 0,
-                                userInput: ""
-                             
-                            })
-
-                            curextraTFIdx = locRec[taskStatus[taskID - 1]['taskID']].length
-                            setcurExtraTFIdx(locRec[taskStatus[taskID - 1]['taskID']].length)
-                        }}/>
-                    </Fab> */}
+                        curextraTFIdx = locRec[taskStatus[taskID - 1]['taskID']].length
+                        setcurExtraTFIdx(locRec[taskStatus[taskID - 1]['taskID']].length)
+                    }}>
+                    <AddIcon  />
+                    </IconButton>
+                </Tooltip>
+                    
 
                 </div>}
 
 
                 {/* hightlight indicates the component information (position,text,id)
-            index indicates the order showed on the side bar */}
+                    index indicates the order showed on the side bar */}
                 <ul className="sidebar__highlights">
                     {/* {console.log(highlights)} */}
                     {highlights.map((highlight, index) => (
@@ -273,77 +251,66 @@ export function TaskShow({
                         <li
                             key={index}
                             className="sidebar__highlight"
-
                         >
 
-                            <div onClick={() => {
-                                console.log(JSON.stringify(highlight.comment.text))
-                                console.log(highlight.id)
-                                updateHash(highlight);
-                                console.log(highlight)
-                                console.log(highlight.id)
-                                console.log(index)
-                            }}>
-                                <div>
-                                    <strong>{highlight.comment.text}</strong>
-                                    {highlight.content.text ? (
-                                        <blockquote style={{ marginTop: "0.5rem" }}>
-                                            {/* change back for the ... */}
-                                            {/* {`${highlight.content.text.slice(0, 90).trim()}…`} */}
-                                            {`${highlight.content.text}`}
-                                        </blockquote>
-                                    ) : null}
-                                    {highlight.content.image ? (
-                                        <div
-                                            className="highlight__image"
-                                            style={{ marginTop: "0.5rem" }}
-                                        >
-                                            <img src={highlight.content.image} alt={"Screenshot"} />
-                                        </div>
-                                    ) : null}
-                                </div>
-
-                                <div className="highlight__location">
-                                    Page {highlight.position.pageNumber}
-                                </div>
-                            </div>
-
+                        <div onClick={() => {
+                            console.log(JSON.stringify(highlight.comment.text))
+                            console.log(highlight.id)
+                            updateHash(highlight);
+                            console.log(highlight)
+                            console.log(highlight.id)
+                            console.log(index)
+                        }}>
                             <div>
-                                <TextField autoComplete="off" fullWidth key={index}
-                                    value={records[taskStatus[taskID - 1]['taskID']][index]['userInput']}
-                                    id="outlined-basic" color="secondary" label="Enter your answer" variant="outlined" 
-                                    onChange={(e) => {
-                                        // setAnswer(e.target.value)
-                                        console.log("typingg!!!!")
-                                        locRec[taskStatus[taskID - 1]['taskID']][index]['userInput'] = e.target.value
-                              
-                                        if (e.target.value.length != 0 && e.target.value.trim().length != 0) {
-                                            locRec[taskStatus[taskID - 1]['taskID']][index]['completed'] = true
-                                            locRec[taskStatus[taskID - 1]['taskID']][index]['typingtimestamp'] = Date.now()
-                                            setShowValid(false)
-                                        
-                                        } else {
-                                            locRec[taskStatus[taskID - 1]['taskID']][index]['completed'] = false
-                                            
-
-                                        }
-
-                                        setLocRec(locRec)
-                                        updateRecords(locRec)
-
-                                    }} />
-                                {/* <input maxLength={50}
-                                    type="text"
-                                    value={locRec[taskStatus[taskID - 1]['taskID']][index]['userInput']}
-                                    onChange={(e) => {
-                                        // setAnswer(e.target.value)
-                                        locRec[taskStatus[taskID - 1]['taskID']][index]['userInput'] = e.target.value
-                                        setLocRec(locRec)
-                                        updateRecords(locRec)
-
-                                    }}
-                                ></input> */}
+                                <strong>{highlight.comment.text}</strong>
+                                {highlight.content.text ? (
+                                    <blockquote style={{ marginTop: "0.5rem" }}>
+                                        {/* change back for the ... */}
+                                        {/* {`${highlight.content.text.slice(0, 90).trim()}…`} */}
+                                        {`${highlight.content.text}`}
+                                    </blockquote>
+                                ) : null}
+                                {highlight.content.image ? (
+                                    <div
+                                        className="highlight__image"
+                                        style={{ marginTop: "0.5rem" }}
+                                    >
+                                        <img src={highlight.content.image} alt={"Screenshot"} />
+                                    </div>
+                                ) : null}
                             </div>
+
+                            <div className="highlight__location">
+                                Page {highlight.position.pageNumber}
+                            </div>
+                        </div>
+
+                        <div>
+                            <TextField autoComplete="off" fullWidth key={index}
+                                value={records[taskStatus[taskID - 1]['taskID']][index]['userInput']}
+                                id="outlined-basic" color="secondary" label="Enter your answer" variant="outlined" 
+                                onChange={(e) => {
+                                    // setAnswer(e.target.value)
+                                    console.log("typingg!!!!")
+                                    locRec[taskStatus[taskID - 1]['taskID']][index]['userInput'] = e.target.value
+                            
+                                    if (e.target.value.length != 0 && e.target.value.trim().length != 0) {
+                                        locRec[taskStatus[taskID - 1]['taskID']][index]['completed'] = true
+                                        locRec[taskStatus[taskID - 1]['taskID']][index]['typingtimestamp'] = Date.now()
+                                        setShowValid(false)
+                                    
+                                    } else {
+                                        locRec[taskStatus[taskID - 1]['taskID']][index]['completed'] = false
+                                        
+
+                                    }
+
+                                    setLocRec(locRec)
+                                    updateRecords(locRec)
+
+                                }} />
+                      
+                        </div>
 
                         </li>
                     ))}
@@ -457,17 +424,6 @@ export function TaskShow({
                              
                             }
 
-                            // if (showValid){
-                            //     setValidMSG("The answer can not be blank!")
-                            //     showValid = false
-                            //     console.log(locRec[taskStatus[taskID - 1]['taskID']])
-
-                            // } else {
-                            //     prevTask()
-                            //     setSWM("")
-                            //     setShowValid(false)
-                            //     setValidMSG("")
-                            // }
 
                             
                         }} style={{ margin: "10px" }}>&laquo; Prev</a>
@@ -493,18 +449,7 @@ export function TaskShow({
                          
                         }
 
-                        // if (showValid){
-                        //     setValidMSG("Do you want to leave a blank for the answer?")
-                        //     showValid = false
-                          
-                        //     setShowValid(false)
-                        //     console.log(locRec[taskStatus[taskID - 1]['taskID']])
-                        // } else {
-                        //     nextTask()
-                        //     updateRecords(locRec)
-                        //     setShowValid(false)
-                        //     setValidMSG("")
-                        // }
+    
                     
                     }} style={{ margin: "20px" }}>Next &raquo;</a>) :
                         (<div>
