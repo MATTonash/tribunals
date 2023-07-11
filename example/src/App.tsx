@@ -13,7 +13,7 @@ import {
 import type { IHighlight, NewHighlight } from "./react-pdf-highlighter";
 import { Spinner } from "./Spinner";
 import { Sidebar } from "./Sidebar";
-import Login from "./FileSel"
+import Login from "./ExperimentSelection"
 
 
 import "./style/App.css";
@@ -100,8 +100,8 @@ class App extends Component<{}, State> {
   browseJson = (updateLogin: Login) => {
 
     const newLogin = this.state.login = updateLogin
-    userRecords[newLogin.expID]['userName'] = newLogin['name']
-    let newrecords = this.state.records = userRecords[newLogin.expID]
+    userRecords[newLogin.selectedExpID]['userName'] = newLogin['name']
+    let newrecords = this.state.records = userRecords[newLogin.selectedExpID]
 
     this.setState({
       login: newLogin,
@@ -114,8 +114,8 @@ class App extends Component<{}, State> {
   nextExps = (updateLogin: Login) => {
 
     const newLogin = this.state.login = updateLogin
-    userRecords[newLogin.expID]['userName'] = newLogin['name']
-    let newrecords = this.state.records = userRecords[newLogin.expID]
+    userRecords[newLogin.selectedExpID]['userName'] = newLogin['name']
+    let newrecords = this.state.records = userRecords[newLogin.selectedExpID]
 
     this.setState({
       login: newLogin,
@@ -140,7 +140,7 @@ class App extends Component<{}, State> {
 
   toggleDocument = (updateTaskID: string) => {
 
-    const newExpID = this.state.login.expID;
+    const newExpID = this.state.login.selectedExpID;
     const newHLID = updateTaskID
 
 

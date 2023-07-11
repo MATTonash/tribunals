@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import Login from "./FileSel"
+import Login from "./ExperimentSelection"
 import taskList from '/static/data/taskData.json'
 import { v4 as uuid } from 'uuid';
 import expList from '/static/data/experiment.json'
@@ -76,7 +76,7 @@ export function CompletedExp({
 
 
 
-    const expID = login.expID
+    const expID = login.selectedExpID
     const name = login.name
     const pdfID = login.pdfID
     const pdfIdxCol: string = 'pdfID'
@@ -141,7 +141,7 @@ export function CompletedExp({
  
 
     let [logDetail, setLogState] = useState({
-        expID: "0",
+        selectedExpID: "0",
         name: "",
         pdfID: "",
         tasks: []
@@ -170,7 +170,7 @@ export function CompletedExp({
             curExpID = curExpIDArray[0]
         
             logDetail = {
-                expID: curExpID,
+                selectedExpID: curExpID,
                 name: records['userName'],
                 pdfID: pdfList[expList[curExpID][pdfIdxCol]],
                 tasks: expList[curExpID][taskIDsCol]
@@ -180,7 +180,7 @@ export function CompletedExp({
             console.log(logDetail)
         } else {
             logDetail = {
-                expID: "0",
+                selectedExpID: "0",
                 name: "",
                 pdfID: "",
                 tasks: []
@@ -251,7 +251,7 @@ export function CompletedExp({
                                     generateRestExps()
                                     console.log(logDetail)
 
-                                    if (logDetail.expID != "0"){
+                                    if (logDetail.selectedExpID != "0"){
                                         nextexpids(logDetail)
                                         expCompleted(false)
                                         showFileFlag = true

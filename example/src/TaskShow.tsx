@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import type { IHighlight } from "./react-pdf-highlighter";
 import { Instruction } from "./Instruction"
-import Login from "./FileSel"
+import Login from "./ExperimentSelection"
 import taskList from '/static/data/taskData.json'
 import TextField from "@material-ui/core/TextField";
 import Fab from '@mui/material/Fab';

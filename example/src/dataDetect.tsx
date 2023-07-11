@@ -39,7 +39,7 @@ function matchPatterns(sentenceArray: any[], searchLocation: any, regex: RegExp,
   const foundPosition = searchLocation['foundPosition']
   const searchNextLine = searchLocation['searchNextLine']
   const searchPrevLine = searchLocation['searchPrevLine']
-  console.log(foundPosition)
+  // console.log(foundPosition)
 
   if (foundPosition.length == 0){
     // console.log("found position is empty")
@@ -49,7 +49,7 @@ function matchPatterns(sentenceArray: any[], searchLocation: any, regex: RegExp,
      
 
       if(match){
-        console.log(match)
+        // console.log(match)
         let searchLine: any
   
         match.forEach((eachWord:any) => {
@@ -127,9 +127,9 @@ function matchPatterns(sentenceArray: any[], searchLocation: any, regex: RegExp,
             for (var k = 1; k<=searchPrevLine; k++){
               const prevSent = sentenceArray[i-k]['str']
               const prevSentLen = prevSent.trim().split(' ').length
-              console.log(prevSent)
-              console.log(i, i-k, prevSentLen, prevSent.split(' '))
-              console.log(curSent, match[2].trim())
+              // console.log(prevSent)
+              // console.log(i, i-k, prevSentLen, prevSent.split(' '))
+              // console.log(curSent, match[2].trim())
   
   
               if (!prevSent.includes(match[2].trim())){
@@ -148,7 +148,7 @@ function matchPatterns(sentenceArray: any[], searchLocation: any, regex: RegExp,
                     foundHLArray.push(generateHighlightComp(matchedWordsLW, searchLine, pageNum, startpositionLW, match[2].trim()))
   
                   } else if (prevSentLen <= 4 ) {
-                    console.log("herereerere")
+                    // console.log("herereerere")
                     let startposition = 0
                     searchLine = sentenceArray[i-k]
                     foundHLArray.push(generateHighlightComp(prevSent, searchLine, pageNum, startposition, match[2].trim()))
@@ -198,7 +198,7 @@ function switchSearchFunction(searchName: string,
     eachTask[searchName] = generateMatchingArray(searchPattern, searchLocation, sentenceArray, pageNum, matchType)
 
   } else if (searchName === "Section") {
-    console.log(sentenceArray)
+    // console.log(sentenceArray)
     eachTask[searchName] = generateMatchingArray(searchPattern, searchLocation, sentenceArray, pageNum, matchType)
 
   }
@@ -302,7 +302,7 @@ const viewportHeight: number = 842.2
 
 let contentHighlight: any = []
 
-console.log(transformArrayAll)
+//console.log(transformArrayAll)
 
 // generate all highlighted terms with the transformed sentence information
 transformArrayAll.forEach((elementArray: any, indexExp: any) => {
@@ -336,7 +336,7 @@ contentHighlight.forEach((element:any)=>{
   contentHighlightFinal.push(taskDicAllFinal)
 })
 
-console.log(contentHighlightFinal)
+//console.log(contentHighlightFinal)
 
 
 
@@ -378,7 +378,7 @@ contentHighlightFinal.forEach((element:any, index:any) => {
 })
 
 
-console.log(secIdx)
+//console.log(secIdx)
 
 
 contentHighlightFinal.forEach((element:any, index:any) => {
@@ -399,7 +399,7 @@ contentHighlightFinal.forEach((element:any, index:any) => {
       if (taskList[key]['search_function']['name'] == 'Section') {
         Object.entries(secIdx).forEach(([key1, value1]: [string, any]) => {
           let i = 1
-          console.log(key1)
+          //console.log(key1)
           value1.forEach((ele3: any, index3: any) => {
             // let tempEle = Object.assign({}, ele3)
             let newText = "Section " + String(key1) +'     ...' + String(i)
@@ -465,5 +465,5 @@ contentHighlightFinal.forEach((element:any, index:any) => {
 })
 
 
-console.log(testHighlights)
-console.log(userRecords)
+// console.log(testHighlights)
+// console.log(userRecords)

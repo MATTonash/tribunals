@@ -1,5 +1,5 @@
 import React from "react"
-import Login from "./FileSel"
+import Login from "./ExperimentSelection"
 import taskList from '/static/data/taskData.json'
 // import { v4 as uuid } from 'uuid';
 // import { testHighlights } from "./dataDetect";
@@ -29,7 +29,7 @@ export function Instruction({
 }: Props) {
 
     // const unique_id = uuid();
-    const expID = login.expID
+    const expID = login.selectedExpID
     const name = login.name
     const pdfID = login.pdfID
 

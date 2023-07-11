@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 import type { IHighlight } from "./react-pdf-highlighter";
-import { FileSel } from "./FileSel"
+import { ExperimentSelection } from "./ExperimentSelection"
 import { TaskShow } from "./TaskShow"
-import Login from "./FileSel"
+import Login from "./ExperimentSelection"
 import { CompletedExp } from "./CompletedExp"
-
-
-
-
-
-
 
 interface Props {
   login: Login;
@@ -40,11 +34,11 @@ export function Sidebar({
 
 }: Props) {
   // can write use state
-  const [showFileFlag, setShowFileFlag] = useState(false)
+  const [selectedExperiment, setShowFileFlag] = useState(false)
   const [completedExp, setcompletedExp] = useState(false)
 
-  if (!showFileFlag) {
-    console.log("it is false, show files")
+  if (!selectedExperiment) {
+    console.log("Selected experiment is false, showing experiment selection")
     return (
       <div className="sidebar" style={{ width: "25vw" }}>
 
@@ -62,7 +56,7 @@ export function Sidebar({
           </p> */}
 
 
-        <FileSel
+        <ExperimentSelection
           login={login}
           // url={url}
           browseJson={browseJson}
@@ -73,7 +67,7 @@ export function Sidebar({
       </div>
     );
   } else {
-    console.log("it is true, remove file selections")
+    console.log("Experiement Selected, showing tasks")
 
     if (!completedExp) {
       return (
