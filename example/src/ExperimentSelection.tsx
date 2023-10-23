@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { BrowserRouter as Router, Route, Link, Routes, useNavigate } from "react-router-dom";
 import expList from '/static/data/experiment.json'
 import pdfList from '/static/data/pdfList.json'
 import Menu from "./UIComponents/Menu"
@@ -76,10 +77,21 @@ export function ExperimentSelection({
     const opts = experimentIDs.map((expID, index) =>
         <option key={index + 1} value={expID}>{expID}</option>)
 
+        const navigate = useNavigate();
+
 
 
     return (
         <div className="description" style={{ padding: "1rem" }}>
+            <div className="navbar">
+
+             <button className="buttonNormal" id='TasksManager' onClick={(e) => {
+                navigate('/tasks')
+             }
+            }>Tasks</button>
+
+            </div>
+
             <h2 style={{ marginBottom: "1rem" }}>Welcome to the Annotation System</h2>
             <p>
                 To get started, please select the experiment file first, and then enter your name.

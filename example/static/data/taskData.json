@@ -78,5 +78,21 @@
             "matchType": "gi"
         },
         "validation_function": "warning"
+    },
+    "task_0006": {
+        "question": "What is/are the section(s)?",
+        "hintMSG": "The hints are recommended as the answer in the input box below. You can amend the answer if they are inappropriate. You can also click the headers to browse the hints highlighted in the PDF file.",
+        "response_type": "free text",
+        "search_function": {
+            "name": "Section", 
+            "regex":"(sections?( +[()-A-Za-z0-9]+){1,2})|( +s[(0-9][0-9A-za-z()]+)",
+            "location": {
+                "foundPosition": [], 
+                "searchNextLine":0,
+                "searchPrevLine":0
+            },
+            "matchType": "gi"
+        },
+        "validation_function": "warning"
     }
 }

@@ -4,7 +4,9 @@
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
-    "noEmit": true
+    "noEmit": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
-  "include": ["./src"]
+  "include": ["./src"],
 }

@@ -175,3 +175,146 @@ img.displayed {
 .deletebutton:hover {
     background: black;
 }
+
+.navbar {
+  overflow: visible;
+  background-color: linear-gradient(
+    rgb(249, 248, 247),
+    rgb(251, 250, 248) 46px,
+    rgb(251, 251, 249) 120px,
+    rgb(248, 247, 245) 35%,
+    rgb(249, 248, 246)
+  );
+  font-family: Arial;
+  position: relative;
+}
+
+.buttonNormal {
+  background-color: #333; /* Grey */
+  /* border: none; */
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 4px;
+  cursor: pointer;
+}
+
+.buttonTopRight {
+  background-color: #4CAF50; /* Green */
+  /* border: none; */
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 10px 4px;
+  cursor: pointer;
+  float: right;
+}
+
+.closeButton red {
+  background-color: #FFFFFF; /* Green */
+  /* border: none; */
+  color: #333;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 10px 4px;
+  cursor: pointer;
+  float: right;
+  display: block;
+}
+
+.rightButtonRed {
+  background-color: #FF0000; /* Green */
+  /* border: none; */
+  color: #FFFFFF;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 10px 4px;
+  cursor: pointer;
+  float: right;
+  display: block;
+}
+
+.rightButtonNormal {
+  background-color: #4CAF50; /* Green */
+  /* border: none; */
+  color: #ffffff;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 10px 4px;
+  cursor: pointer;
+  float: right;
+  display: block;
+}
+
+.fullclick li {
+  list-style: none;
+  margin: 1em 0;
+  padding: 10px 15px;
+  background: #ffffff;
+  position: relative;
+
+}
+.fullclick a.main {
+  color: #85baff;
+  text-align: right;
+  display: block;
+  z-index: 1;
+}
+.fullclick li a.main::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  content: ' ';
+}
+
+.modal {
+  font-size: 12px;
+}
+.modal > .header {
+  background-color: #D3D3D3;
+  width: 100%;
+  border-bottom: 1px solid gray;
+  font-size: 18px;
+  text-align: center;
+  padding: 5px;
+  color: #333;
+  font-weight: bold;
+}
+.modal > .content {
+  background-color: #D3D3D3;
+  width: 100%;
+  padding: 10px 5px;
+}
+.modal > .actions {
+  background-color: #D3D3D3;
+  width: 100%;
+  padding: 10px 5px;
+  margin: auto;
+  text-align: center;
+}
+.modal > .close {
+  cursor: pointer;
+  position: absolute;
+  display: block;
+  padding: 2px 5px;
+  line-height: 20px;
+  right: -10px;
+  top: -10px;
+  font-size: 24px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #cfcece;
+}

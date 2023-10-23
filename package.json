@@ -52,8 +52,10 @@
     "pdfjs-dist": "2.8.335",
     "react-csv": "^2.2.2",
     "react-rnd": "^10.1.10",
-    "react-router-dom": "^6.2.1",
+    "react-router-dom": "^6.14.2",
+    "reactjs-popup": "^2.0.5",
     "state-pool": "^0.7.1",
+    "styled-components": "^6.0.4",
     "uuidv4": "^6.2.12"
   },
   "repository": {

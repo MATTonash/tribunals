@@ -25,6 +25,8 @@ import "./style/App.css";
 
 // enable <import { testHighlights, userRecords } from "./dataDetect";> to test on dataDectcts script
 import { testHighlights, userRecords } from "./dataDetect";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {ManageTasks } from "./ManageTasks";
 
 
 
@@ -247,7 +249,10 @@ class App extends Component<{}, State> {
     } else {
       return (
         <div className="App" style={{ display: "flex", height: "100vh" }}>
-          <Sidebar
+          <BrowserRouter basename='/'>
+            <Routes>
+              <Route path = "/" element = {
+                <Sidebar
             login={login}
             // url={url}
             highlights={highlights}
@@ -260,6 +265,11 @@ class App extends Component<{}, State> {
             endfinished={this.endfinished}
   
           />
+              }/>
+            <Route path="tasks" element={<ManageTasks />} />
+          
+            </Routes>
+          </BrowserRouter>
           <div style={{ height: "100vh", width: "75vw", position: "relative" }}>
             <PdfLoader url={url} beforeLoad={<Spinner />}>
               {(pdfDocument) => (
@@ -345,5 +355,7 @@ class App extends Component<{}, State> {
     
   }
 }
+
+
 
 export default App;
